@@ -1,0 +1,127 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model address {
+  address_id                                 Int        @id @default(autoincrement())
+  address_line_1                             String?    @db.VarChar(255)
+  address_line_2                             String?    @db.VarChar(255)
+  locality                                   String?    @db.VarChar(100)
+  city                                       String?    @db.VarChar(100)
+  state                                      String?    @db.VarChar(100)
+  pincode                                    String?    @db.VarChar(10)
+  shipment_shipment_from_address_idToaddress shipment[] @relation("shipment_from_address_idToaddress")
+  shipment_shipment_to_address_idToaddress   shipment[] @relation("shipment_to_address_idToaddress")
+}
+
+model payment {
+  payment_id     Int       @id @default(autoincrement())
+  shipment_id    Int?
+  amount         Decimal?  @db.Decimal(10, 2)
+  payment_method String?   @db.VarChar(50)
+  payment_status String?   @db.VarChar(50)
+  created_at     DateTime? @default(now()) @db.DateTime(0)
+  updated_at     DateTime? @db.DateTime(0)
+  shipment       shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
+
+  @@index([shipment_id], map: "shipment_id")
+}
+
+model shipment {
+  shipment_id                               Int                    @id @default(autoincrement())
+  user_id                                   Int?
+  from_address_id                           Int?
+  to_address_id                             Int?
+  shipment_type                             String?                @db.VarChar(50)
+  status                                    String?                @db.VarChar(50)
+  is_draft                                  Boolean?               @default(false)
+  is_finalized                              Boolean?               @default(false)
+  created_at                                DateTime?              @default(now()) @db.DateTime(0)
+  updated_at                                DateTime?              @db.DateTime(0)
+  payment                                   payment[]
+  user                                      user?                  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
+  address_shipment_from_address_idToaddress address?               @relation("shipment_from_address_idToaddress", fields: [from_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
+  address_shipment_to_address_idToaddress   address?               @relation("shipment_to_address_idToaddress", fields: [to_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
+  shipmentcase                              shipmentcase[]
+  shipmentdocument                          shipmentdocument[]
+  shipmentitem                              shipmentitem[]
+  shipmentnotification                      shipmentnotification[]
+
+  @@index([from_address_id], map: "from_address_id")
+  @@index([to_address_id], map: "to_address_id")
+  @@index([user_id], map: "user_id")
+}
+
+model shipmentcase {
+  case_id     Int       @id @default(autoincrement())
+  user_id     Int?
+  shipment_id Int?
+  case_status String?   @db.VarChar(50)
+  created_at  DateTime? @default(now()) @db.DateTime(0)
+  updated_at  DateTime? @db.DateTime(0)
+  user        user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentcase_ibfk_1")
+  shipment    shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentcase_ibfk_2")
+
+  @@index([shipment_id], map: "shipment_id")
+  @@index([user_id], map: "user_id")
+}
+
+model shipmentdocument {
+  document_id   Int       @id @default(autoincrement())
+  shipment_id   Int?
+  document_type String?   @db.VarChar(50)
+  document_file Bytes?    @db.Blob
+  shipment      shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentdocument_ibfk_1")
+
+  @@index([shipment_id], map: "shipment_id")
+}
+
+model shipmentitem {
+  shipment_item_id Int       @id @default(autoincrement())
+  shipment_id      Int?
+  item_description String?   @db.VarChar(255)
+  quantity         Int?
+  weight           Decimal?  @db.Decimal(10, 2)
+  value            Decimal?  @db.Decimal(10, 2)
+  shipment         shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentitem_ibfk_1")
+
+  @@index([shipment_id], map: "shipment_id")
+}
+
+model shipmentnotification {
+  notification_id   Int       @id @default(autoincrement())
+  shipment_id       Int?
+  notification_type String?   @db.VarChar(50)
+  sent_at           DateTime? @default(now()) @db.DateTime(0)
+  shipment          shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentnotification_ibfk_1")
+
+  @@index([shipment_id], map: "shipment_id")
+}
+
+model shipmentservice {
+  service_id   Int      @id @default(autoincrement())
+  service_name String?  @db.VarChar(50)
+  description  String?  @db.Text
+  price        Decimal? @db.Decimal(10, 2)
+}
+
+model user {
+  user_id      Int            @id @default(autoincrement())
+  name         String         @db.VarChar(255)
+  email        String         @db.VarChar(255)
+  phone_number String         @db.VarChar(255)
+  shipment     shipment[]
+  shipmentcase shipmentcase[]
+}
+
+model users {
+  user_id      Int    @id @default(autoincrement())
+  name         String @db.VarChar(255)
+  email        String @db.VarChar(255)
+  phone_number String @db.VarChar(255)
+}
