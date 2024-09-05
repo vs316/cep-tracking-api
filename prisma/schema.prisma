@@ -51,12 +51,12 @@ model shipment {
   shipmentdocument                          shipmentdocument[]
   shipmentitem                              shipmentitem[]
   shipmentnotification                      shipmentnotification[]
+  shipmentservice                           shipmentservice[]
 
   @@index([from_address_id], map: "from_address_id")
   @@index([to_address_id], map: "to_address_id")
   @@index([user_id], map: "user_id")
 }
-
 model shipmentcase {
   case_id     Int       @id @default(autoincrement())
   user_id     Int?
@@ -104,10 +104,18 @@ model shipmentnotification {
 }
 
 model shipmentservice {
-  service_id   Int      @id @default(autoincrement())
-  service_name String?  @db.VarChar(50)
-  description  String?  @db.Text
-  price        Decimal? @db.Decimal(10, 2)
+  shipment_service_id Int                            @id @default(autoincrement())
+  shipment_id         Int
+  service_id          Int
+  service_name        String                         @db.VarChar(255)
+  service_description String?                        @db.Text
+  service_price       Decimal                        @db.Decimal(10, 2)
+  service_status      shipmentservice_service_status
+  created_at          DateTime?                      @default(now()) @db.Timestamp(0)
+  updated_at          DateTime?                      @default(now()) @db.Timestamp(0)
+  shipment            shipment?                      @relation(fields: [shipment_id], references: [shipment_id])
+
+  @@index([shipment_id], map: "shipment_id")
 }
 
 model user {
@@ -124,4 +132,11 @@ model users {
   name         String @db.VarChar(255)
   email        String @db.VarChar(255)
   phone_number String @db.VarChar(255)
+}
+
+enum shipmentservice_service_status {
+  pending
+  in_progress
+  completed
+  cancelled
 }
