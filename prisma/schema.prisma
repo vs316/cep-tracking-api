@@ -39,10 +39,10 @@ model shipment {
   to_address_id                             Int?
   shipment_type                             String?                @db.VarChar(50)
   status                                    String?                @db.VarChar(50)
-  is_draft                                  Boolean?               @default(false)
+  is_draft                                  Boolean?               @default(true)
   is_finalized                              Boolean?               @default(false)
   created_at                                DateTime?              @default(now()) @db.DateTime(0)
-  updated_at                                DateTime?              @db.DateTime(0)
+  updated_at                                DateTime?              @updatedAt
   payment                                   payment[]
   user                                      user?                  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
   address_shipment_from_address_idToaddress address?               @relation("shipment_from_address_idToaddress", fields: [from_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
@@ -57,6 +57,7 @@ model shipment {
   @@index([to_address_id], map: "to_address_id")
   @@index([user_id], map: "user_id")
 }
+
 model shipmentcase {
   case_id     Int       @id @default(autoincrement())
   user_id     Int?
@@ -125,13 +126,6 @@ model user {
   phone_number String         @db.VarChar(255)
   shipment     shipment[]
   shipmentcase shipmentcase[]
-}
-
-model users {
-  user_id      Int    @id @default(autoincrement())
-  name         String @db.VarChar(255)
-  email        String @db.VarChar(255)
-  phone_number String @db.VarChar(255)
 }
 
 enum shipmentservice_service_status {
