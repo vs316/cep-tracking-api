@@ -1,20 +1,19 @@
 /* eslint-disable prettier/prettier */
-// import { ValidationPipe } from '@nestjs/common';
+import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-//import { SwaggerModule, DocumentBuilder } from '@nestjs/swagger';
+import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
+  app.useGlobalPipes(new ValidationPipe()); // Use ValidationPipe here
+  const configService = app.get(ConfigService);
 
-  // const config = new DocumentBuilder()
-  //   .setTitle('Median')
-  //   .setDescription('The Median API description')
-  //   .setVersion('0.1')
-  //   .build();
-
-  // const document = SwaggerModule.createDocument(app, config);
-  // SwaggerModule.setup('api', app, document);
+  app.enableCors({
+    origin: configService.get<string>('FRONTEND_URL'), // Use the environment variable
+    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    credentials: true,
+  });
 
   await app.listen(3000);
 }

@@ -5,7 +5,11 @@ import { address } from './address.model';
 export class AddressService {
   constructor(private prisma: PrismaService) {}
   async getAllAddresses(): Promise<address[]> {
-    return this.prisma.address.findMany();
+    const addresses = await this.prisma.address.findMany();
+    return addresses.map((addr) => ({
+      ...addr,
+      userId: addr.userId, // Ensure userId is included
+    }));
   }
   async getAddress(address_id: number): Promise<address | null> {
     return this.prisma.address.findUnique({
@@ -16,6 +20,26 @@ export class AddressService {
     return this.prisma.address.create({
       data,
     });
+  }
+  async createAddressesForUser(
+    addresses: address[],
+    userId: number,
+  ): Promise<void> {
+    const addressPromises = addresses.map((address) =>
+      this.prisma.address.create({
+        data: {
+          address_line_1: address.address_line_1,
+          address_line_2: address.address_line_2,
+          locality: address.locality,
+          city: address.city,
+          state: address.state,
+          pincode: address.pincode,
+          userId: userId, // Link the address to the created user
+        },
+      }),
+    );
+
+    await Promise.all(addressPromises);
   }
   async updateAddress(address_id: number, data: address): Promise<address> {
     return this.prisma.address.update({

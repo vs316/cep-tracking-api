@@ -9,14 +9,16 @@ datasource db {
 
 model address {
   address_id                                 Int        @id @default(autoincrement())
-  address_line_1                             String?    @db.VarChar(255)
+  address_line_1                             String    @db.VarChar(255)
   address_line_2                             String?    @db.VarChar(255)
   locality                                   String?    @db.VarChar(100)
   city                                       String?    @db.VarChar(100)
   state                                      String?    @db.VarChar(100)
   pincode                                    String?    @db.VarChar(10)
+  userId                                     Int
   shipment_shipment_from_address_idToaddress shipment[] @relation("shipment_from_address_idToaddress")
   shipment_shipment_to_address_idToaddress   shipment[] @relation("shipment_to_address_idToaddress")
+  user                                       user?      @relation("UserAddresses",fields: [userId], references: [user_id])
 }
 
 model payment {
@@ -39,10 +41,10 @@ model shipment {
   to_address_id                             Int?
   shipment_type                             String?                @db.VarChar(50)
   status                                    String?                @db.VarChar(50)
-  is_draft                                  Boolean?               @default(true)
+  is_draft                                  Boolean?               @default(false)
   is_finalized                              Boolean?               @default(false)
   created_at                                DateTime?              @default(now()) @db.DateTime(0)
-  updated_at                                DateTime?              @updatedAt
+  updated_at                                DateTime?              @updatedAt @db.DateTime(0)
   payment                                   payment[]
   user                                      user?                  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
   address_shipment_from_address_idToaddress address?               @relation("shipment_from_address_idToaddress", fields: [from_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
@@ -55,7 +57,7 @@ model shipment {
 
   @@index([from_address_id], map: "from_address_id")
   @@index([to_address_id], map: "to_address_id")
-  @@index([user_id], map: "user_id")
+  @@index([user_id], map: "shipment_ibfk_1")
 }
 
 model shipmentcase {
@@ -65,7 +67,6 @@ model shipmentcase {
   case_status String?   @db.VarChar(50)
   created_at  DateTime? @default(now()) @db.DateTime(0)
   updated_at  DateTime? @db.DateTime(0)
-  user        user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentcase_ibfk_1")
   shipment    shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentcase_ibfk_2")
 
   @@index([shipment_id], map: "shipment_id")
@@ -114,18 +115,24 @@ model shipmentservice {
   service_status      shipmentservice_service_status
   created_at          DateTime?                      @default(now()) @db.Timestamp(0)
   updated_at          DateTime?                      @default(now()) @db.Timestamp(0)
-  shipment            shipment?                      @relation(fields: [shipment_id], references: [shipment_id])
+  shipment            shipment                       @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentservice_ibfk_1")
 
   @@index([shipment_id], map: "shipment_id")
 }
 
 model user {
-  user_id      Int            @id @default(autoincrement())
-  name         String         @db.VarChar(255)
-  email        String         @db.VarChar(255)
-  phone_number String         @db.VarChar(255)
-  shipment     shipment[]
-  shipmentcase shipmentcase[]
+  user_id       Int        @id @default(autoincrement())
+  first_name    String     @db.VarChar(255)
+  last_name     String     @db.VarChar(255)
+  email         String     @unique(map: "email") @db.VarChar(255)
+  phone_number  String     @db.VarChar(20)
+  password      String     @db.VarChar(255)
+  created_at    DateTime   @default(now()) @db.DateTime(0)
+  updated_at    DateTime   @default(now()) @updatedAt @db.DateTime(0)
+  emailVerified Boolean    @default(false)
+  phoneVerified Boolean    @default(false)
+  shipment      shipment[]
+  addresses     address[]  @relation("UserAddresses")
 }
 
 enum shipmentservice_service_status {

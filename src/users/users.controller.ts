@@ -1,5 +1,6 @@
 /* eslint-disable prettier/prettier */
 import {
+  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -13,9 +14,14 @@ import {
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
 import { user } from './user.model';
+import { address } from '../address/address.model'; // Import the address model
+import { AddressService } from 'src/address/address.service';
 @Controller('user')
 export class UsersController {
-  constructor(private readonly usersService: UsersService) {}
+  constructor(
+    private readonly usersService: UsersService,
+    private readonly addressService: AddressService,
+  ) {}
 
   @Get()
   async getAllUsers(
@@ -29,9 +35,58 @@ export class UsersController {
       result: result,
     });
   }
+
   @Post()
-  async postUser(@Body() postData: user): Promise<user> {
-    return this.usersService.createUser(postData);
+  async postUser(
+    @Body()
+    postData: {
+      first_name: string;
+      last_name: string;
+      email: string;
+      phone_number: string;
+      password: string;
+      addresses: address[];
+    },
+  ): Promise<user> {
+    console.log(postData);
+    if (
+      !postData.first_name ||
+      !postData.last_name ||
+      !postData.email ||
+      !postData.phone_number ||
+      !postData.password
+    ) {
+      throw new BadRequestException('User data is required.');
+    }
+
+    const createdUser = await this.usersService.createUserWithAddresses({
+      first_name: postData.first_name,
+      last_name: postData.last_name,
+      email: postData.email,
+      phone_number: postData.phone_number,
+      password: postData.password,
+    });
+
+    // If addresses are provided, create them
+    if (postData.addresses && postData.addresses.length > 0) {
+      const addressData = postData.addresses.map((addr) => ({
+        // Set to 0 or omit if auto-incremented
+        address_line_1: addr.address_line_1,
+        address_line_2: addr.address_line_2,
+        locality: addr.locality,
+        city: addr.city,
+        state: addr.state,
+        pincode: addr.pincode,
+        userId: createdUser.user_id, // Link the address to the created user
+      }));
+
+      await this.addressService.createAddressesForUser(
+        addressData,
+        createdUser.user_id,
+      );
+    }
+
+    return createdUser;
   }
 
   @Get(':user_id')

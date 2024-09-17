@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import {
   Body,
   Controller,
@@ -30,9 +29,15 @@ export class AddressController {
       result: result,
     });
   }
+
   @Post()
-  async postAddress(@Body() postData: address): Promise<address> {
-    return this.addressService.createAddress(postData);
+  async postAddress(@Body() postData: address[]): Promise<address[]> {
+    const createdAddresses = [];
+    for (const address of postData) {
+      const createdAddress = await this.addressService.createAddress(address);
+      createdAddresses.push(createdAddress);
+    }
+    return createdAddresses;
   }
 
   @Get(':address_id')
