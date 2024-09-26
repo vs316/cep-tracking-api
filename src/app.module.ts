@@ -42,6 +42,7 @@ import { ShipmentNotificationModule } from './shipment/shipmentnotification/ship
 import { ShipmentDocumentModule } from './shipment/shipmentdocument/shipmentdocument.module';
 import { ShipmentCaseModule } from './shipment/shipmentcase/shipmentcase.module';
 import { ShipFromModule } from './shipment/shipfrom/shipfrom.module';
+import { ShipToModule } from './shipment/shipto/shipto.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -58,6 +59,7 @@ import { ShipFromModule } from './shipment/shipfrom/shipfrom.module';
     ShipmentCaseModule,
     PaymentModule,
     ShipFromModule,
+    ShipToModule,
     // Add other modules here
   ],
   controllers: [AppController],

@@ -7,5 +7,7 @@ export class shipmentitem implements Prisma.shipmentitemCreateInput {
   quantity?: number | null;
   weight?: Prisma.Decimal | number | null;
   value?: Prisma.Decimal | number | null;
+  descriptionOfGoods?: string;
+  servicetype?: string;
   shipment?: Prisma.shipmentCreateNestedOneWithoutShipmentitemInput | null;
 }

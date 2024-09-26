@@ -19,7 +19,19 @@ export class ShipmentItemService {
     data: Prisma.shipmentitemCreateInput,
   ): Promise<shipmentitem> {
     return this.prisma.shipmentitem.create({
-      data,
+      data: {
+        item_description: data.item_description,
+        quantity: data.quantity,
+        weight: data.weight,
+        value: data.value,
+        descriptionOfGoods: data.descriptionOfGoods,
+        servicetype: data.servicetype, // Now Prisma will recognize this field
+        shipment: data.shipment
+          ? {
+              connect: { shipment_id: data.shipment.connect?.shipment_id },
+            }
+          : undefined,
+      },
     });
   }
   async updateShipmentItem(
@@ -33,6 +45,8 @@ export class ShipmentItemService {
         quantity: data.quantity ?? undefined, // Update quantity if provided
         weight: data.weight ?? undefined, // Update weight if provided
         value: data.value ?? undefined, // Update value if provided
+        descriptionOfGoods: data.descriptionOfGoods ?? undefined,
+        // servicetype: data.servicetype ?? undefined,
         shipment: data.shipment
           ? {
               connect: { shipment_id: data.shipment.connect?.shipment_id }, // Use 'connect' to link the shipment

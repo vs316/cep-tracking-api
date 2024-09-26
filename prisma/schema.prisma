@@ -86,13 +86,15 @@ model shipmentdocument {
 }
 
 model shipmentitem {
-  shipment_item_id Int       @id @default(autoincrement())
-  shipment_id      Int?
-  item_description String?   @db.VarChar(255)
-  quantity         Int?
-  weight           Decimal?  @db.Decimal(10, 2)
-  value            Decimal?  @db.Decimal(10, 2)
-  shipment         shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentitem_ibfk_1")
+  shipment_item_id   Int       @id @default(autoincrement())
+  shipment_id        Int?
+  item_description   String?   @db.VarChar(255)
+  quantity           Int?
+  weight             Decimal?  @db.Decimal(10, 2)
+  value              Decimal?  @db.Decimal(10, 2)
+  descriptionOfGoods String?   @db.VarChar(255)
+  servicetype        String?   @db.VarChar(255)
+  shipment           shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentitem_ibfk_1")
 
   @@index([shipment_id], map: "shipment_id")
 }
@@ -149,6 +151,21 @@ model shipfrom {
   locality       String? @db.VarChar(100)
   address_line_2 String? @db.VarChar(255)
   address_line_1 String  @db.VarChar(255)
+}
+
+/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
+model shipto {
+  shipto_id      Int     @id @default(autoincrement())
+  first_name     String  @db.VarChar(255)
+  last_name      String  @db.VarChar(255)
+  email          String  @unique(map: "email") @db.VarChar(255)
+  phone_number   String  @db.VarChar(20)
+  pincode        String? @db.VarChar(10)
+  city           String? @db.VarChar(100)
+  locality       String? @db.VarChar(100)
+  address_line_2 String? @db.VarChar(255)
+  address_line_1 String  @db.VarChar(255)
+  company        String? @db.VarChar(255)
 }
 
 enum shipmentservice_service_status {
