@@ -2,6 +2,7 @@ import { Prisma } from '@prisma/client';
 
 export class user implements Prisma.userCreateInput {
   user_id?: number;
+  uuid: string;
   first_name: string;
   last_name: string;
   email: string;

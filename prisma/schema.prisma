@@ -9,16 +9,18 @@ datasource db {
 
 model address {
   address_id                                 Int        @id @default(autoincrement())
-  address_line_1                             String    @db.VarChar(255)
+  address_line_1                             String     @db.VarChar(255)
   address_line_2                             String?    @db.VarChar(255)
   locality                                   String?    @db.VarChar(100)
   city                                       String?    @db.VarChar(100)
   state                                      String?    @db.VarChar(100)
   pincode                                    String?    @db.VarChar(10)
-  userId                                     Int
+  uuid                                       String
+  user                                       user       @relation("UserAddresses", fields: [uuid], references: [uuid])
   shipment_shipment_from_address_idToaddress shipment[] @relation("shipment_from_address_idToaddress")
   shipment_shipment_to_address_idToaddress   shipment[] @relation("shipment_to_address_idToaddress")
-  user                                       user?      @relation("UserAddresses",fields: [userId], references: [user_id])
+
+  @@index([uuid], map: "address_uuid_fkey")
 }
 
 model payment {
@@ -122,6 +124,7 @@ model shipmentservice {
 
 model user {
   user_id       Int        @id @default(autoincrement())
+  uuid          String     @unique @default(uuid()) @db.VarChar(36)
   first_name    String     @db.VarChar(255)
   last_name     String     @db.VarChar(255)
   email         String     @unique(map: "email") @db.VarChar(255)
@@ -131,8 +134,21 @@ model user {
   updated_at    DateTime   @default(now()) @updatedAt @db.DateTime(0)
   emailVerified Boolean    @default(false)
   phoneVerified Boolean    @default(false)
-  shipment      shipment[]
   addresses     address[]  @relation("UserAddresses")
+  shipment      shipment[]
+}
+
+model shipfrom {
+  shipfrom_id    Int     @id @default(autoincrement())
+  first_name     String  @db.VarChar(255)
+  last_name      String  @db.VarChar(255)
+  email          String  @unique(map: "email") @db.VarChar(255)
+  phone_number   String  @db.VarChar(20)
+  pincode        String? @db.VarChar(10)
+  city           String? @db.VarChar(100)
+  locality       String? @db.VarChar(100)
+  address_line_2 String? @db.VarChar(255)
+  address_line_1 String  @db.VarChar(255)
 }
 
 enum shipmentservice_service_status {

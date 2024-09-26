@@ -46,6 +46,7 @@ export class UsersController {
       phone_number: string;
       password: string;
       addresses: address[];
+      uuid: string;
     },
   ): Promise<user> {
     console.log(postData);
@@ -54,7 +55,8 @@ export class UsersController {
       !postData.last_name ||
       !postData.email ||
       !postData.phone_number ||
-      !postData.password
+      !postData.password ||
+      !postData.uuid
     ) {
       throw new BadRequestException('User data is required.');
     }
@@ -65,6 +67,7 @@ export class UsersController {
       email: postData.email,
       phone_number: postData.phone_number,
       password: postData.password,
+      uuid: postData.uuid,
     });
 
     // If addresses are provided, create them
@@ -77,21 +80,26 @@ export class UsersController {
         city: addr.city,
         state: addr.state,
         pincode: addr.pincode,
-        userId: createdUser.user_id, // Link the address to the created user
+        uuid: createdUser.uuid, // Link the address to the created user
       }));
 
       await this.addressService.createAddressesForUser(
         addressData,
-        createdUser.user_id,
+        createdUser.uuid,
       );
     }
 
     return createdUser;
   }
 
+  @Get(':uuid')
+  async getUser(@Param('uuid') uuid: string): Promise<user> {
+    return this.usersService.getUser(uuid);
+  }
+
   @Get(':user_id')
-  async getUser(@Param('user_id') user_id: number): Promise<user | null> {
-    return this.usersService.getUser(user_id);
+  async getUserById(@Param('user_id') userId: number): Promise<user> {
+    return this.usersService.getUserById(userId);
   }
 
   @Delete(':user_id')

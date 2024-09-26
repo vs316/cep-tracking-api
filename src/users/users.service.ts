@@ -12,8 +12,11 @@ export class UsersService {
     return this.prisma.user.findMany();
   }
 
-  async getUser(user_id: number): Promise<user | null> {
-    return this.prisma.user.findUnique({ where: { user_id: Number(user_id) } });
+  async getUser(uuid: string): Promise<user> {
+    return this.prisma.user.findUnique({ where: { uuid: uuid } });
+  }
+  async getUserById(userId: number): Promise<user> {
+    return this.prisma.user.findUnique({ where: { user_id: userId } });
   }
 
   async createUserWithAddresses(
@@ -28,6 +31,7 @@ export class UsersService {
         email: userData.email,
         phone_number: userData.phone_number,
         password: userData.password,
+        uuid: userData.uuid,
       },
     });
 

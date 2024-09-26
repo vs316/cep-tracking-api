@@ -12,7 +12,7 @@ import {
 import { address } from './address.model';
 import { AddressService } from './address.service';
 import { Request, Response } from 'express';
-
+import { CreateAddressDto } from './create-address.dto';
 @Controller('address')
 export class AddressController {
   constructor(private readonly addressService: AddressService) {}
@@ -45,6 +45,27 @@ export class AddressController {
     @Param('address_id') address_id: number,
   ): Promise<address | null> {
     return this.addressService.getAddress(address_id);
+  }
+
+  @Get('address?uuid=${uuid}')
+  async getUserAddresses(@Param('uuid') uuid: string) {
+    const addresses = await this.addressService.getUserAddresses(uuid);
+    if (!addresses || addresses.length === 0) {
+      return {
+        status: 'Not Found',
+        message: `No addresses found for user ID ${uuid}.`,
+        result: [],
+      };
+    }
+    return {
+      status: 'Ok!',
+      message: 'Successfully fetched data!',
+      result: addresses,
+    };
+  }
+  @Post('address')
+  async createNewAddress(@Body() createAddressDto: CreateAddressDto) {
+    return this.addressService.createAddress(createAddressDto);
   }
 
   @Delete(':address_id')

@@ -8,6 +8,6 @@ export class address implements Omit<Prisma.addressCreateInput, 'user'> {
   city?: string;
   state?: string;
   pincode?: string;
-  userId: number;
+  uuid: string;
   //user?: Prisma.userCreateNestedOneWithoutAddressesInput; // Removed user property
 }

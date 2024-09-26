@@ -1,6 +1,7 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { address } from './address.model';
+import { CreateAddressDto } from './create-address.dto';
 @Injectable()
 export class AddressService {
   constructor(private prisma: PrismaService) {}
@@ -8,7 +9,6 @@ export class AddressService {
     const addresses = await this.prisma.address.findMany();
     return addresses.map((addr) => ({
       ...addr,
-      userId: addr.userId, // Ensure userId is included
     }));
   }
   async getAddress(address_id: number): Promise<address | null> {
@@ -16,14 +16,14 @@ export class AddressService {
       where: { address_id: Number(address_id) },
     });
   }
-  async createAddress(data: address): Promise<address> {
-    return this.prisma.address.create({
-      data,
-    });
-  }
+  // async createAddress(data: address): Promise<address> {
+  //   return this.prisma.address.create({
+  //     data,
+  //   });
+  // }
   async createAddressesForUser(
     addresses: address[],
-    userId: number,
+    uuid: string,
   ): Promise<void> {
     const addressPromises = addresses.map((address) =>
       this.prisma.address.create({
@@ -34,7 +34,7 @@ export class AddressService {
           city: address.city,
           state: address.state,
           pincode: address.pincode,
-          userId: userId, // Link the address to the created user
+          uuid: uuid, // Link the address to the created user
         },
       }),
     );
@@ -58,6 +58,24 @@ export class AddressService {
   async deleteAddress(address_id: number): Promise<address> {
     return this.prisma.address.delete({
       where: { address_id: Number(address_id) },
+    });
+  }
+
+  async getUserAddresses(uuid: string): Promise<address[]> {
+    try {
+      return await this.prisma.address.findMany({
+        where: { uuid },
+      });
+    } catch (error) {
+      // Handle any errors that may occur during the database query
+      console.error('Error fetching addresses:', error);
+      throw new Error('Failed to fetch addresses'); // You may want to throw a more specific error
+    }
+  }
+
+  async createAddress(createAddressDto: CreateAddressDto): Promise<address> {
+    return this.prisma.address.create({
+      data: createAddressDto,
     });
   }
 }
