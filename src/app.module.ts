@@ -43,6 +43,8 @@ import { ShipmentDocumentModule } from './shipment/shipmentdocument/shipmentdocu
 import { ShipmentCaseModule } from './shipment/shipmentcase/shipmentcase.module';
 import { ShipFromModule } from './shipment/shipfrom/shipfrom.module';
 import { ShipToModule } from './shipment/shipto/shipto.module';
+import { AdminModule } from './admin/administrator/admin.module';
+import { CourierModule } from './admin/courier/courier.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -60,6 +62,8 @@ import { ShipToModule } from './shipment/shipto/shipto.module';
     PaymentModule,
     ShipFromModule,
     ShipToModule,
+    AdminModule,
+    CourierModule,
     // Add other modules here
   ],
   controllers: [AppController],

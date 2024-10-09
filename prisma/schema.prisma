@@ -7,6 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
+model Admin {
+  admin_id   Int      @id @default(autoincrement())
+  uuid       String   @unique @default(uuid()) @db.VarChar(36)
+  username   String   @unique
+  email      String   @unique
+  password   String
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @updatedAt @db.DateTime(0)
+}
+
 model address {
   address_id                                 Int        @id @default(autoincrement())
   address_line_1                             String     @db.VarChar(255)
@@ -37,52 +47,26 @@ model payment {
 }
 
 model shipment {
-  shipment_id                               Int                    @id @default(autoincrement())
+  shipment_id                               Int       @id @default(autoincrement())
   user_id                                   Int?
   from_address_id                           Int?
   to_address_id                             Int?
-  shipment_type                             String?                @db.VarChar(50)
-  status                                    String?                @db.VarChar(50)
-  is_draft                                  Boolean?               @default(false)
-  is_finalized                              Boolean?               @default(false)
-  created_at                                DateTime?              @default(now()) @db.DateTime(0)
-  updated_at                                DateTime?              @updatedAt @db.DateTime(0)
+  shipment_type                             String?   @db.VarChar(50)
+  status                                    String?   @db.VarChar(50)
+  is_draft                                  Boolean?  @default(false)
+  is_finalized                              Boolean?  @default(false)
+  created_at                                DateTime? @default(now()) @db.DateTime(0)
+  updated_at                                DateTime? @updatedAt @db.DateTime(0)
   payment                                   payment[]
-  user                                      user?                  @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
-  address_shipment_from_address_idToaddress address?               @relation("shipment_from_address_idToaddress", fields: [from_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
-  address_shipment_to_address_idToaddress   address?               @relation("shipment_to_address_idToaddress", fields: [to_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
-  shipmentcase                              shipmentcase[]
-  shipmentdocument                          shipmentdocument[]
-  shipmentitem                              shipmentitem[]
-  shipmentnotification                      shipmentnotification[]
-  shipmentservice                           shipmentservice[]
+  user                                      user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
+  address_shipment_from_address_idToaddress address?  @relation("shipment_from_address_idToaddress", fields: [from_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
+  address_shipment_to_address_idToaddress   address?  @relation("shipment_to_address_idToaddress", fields: [to_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
+
+  shipmentitem shipmentitem[]
 
   @@index([from_address_id], map: "from_address_id")
   @@index([to_address_id], map: "to_address_id")
   @@index([user_id], map: "shipment_ibfk_1")
-}
-
-model shipmentcase {
-  case_id     Int       @id @default(autoincrement())
-  user_id     Int?
-  shipment_id Int?
-  case_status String?   @db.VarChar(50)
-  created_at  DateTime? @default(now()) @db.DateTime(0)
-  updated_at  DateTime? @db.DateTime(0)
-  shipment    shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentcase_ibfk_2")
-
-  @@index([shipment_id], map: "shipment_id")
-  @@index([user_id], map: "user_id")
-}
-
-model shipmentdocument {
-  document_id   Int       @id @default(autoincrement())
-  shipment_id   Int?
-  document_type String?   @db.VarChar(50)
-  document_file Bytes?    @db.Blob
-  shipment      shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentdocument_ibfk_1")
-
-  @@index([shipment_id], map: "shipment_id")
 }
 
 model shipmentitem {
@@ -95,31 +79,6 @@ model shipmentitem {
   descriptionOfGoods String?   @db.VarChar(255)
   servicetype        String?   @db.VarChar(255)
   shipment           shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentitem_ibfk_1")
-
-  @@index([shipment_id], map: "shipment_id")
-}
-
-model shipmentnotification {
-  notification_id   Int       @id @default(autoincrement())
-  shipment_id       Int?
-  notification_type String?   @db.VarChar(50)
-  sent_at           DateTime? @default(now()) @db.DateTime(0)
-  shipment          shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentnotification_ibfk_1")
-
-  @@index([shipment_id], map: "shipment_id")
-}
-
-model shipmentservice {
-  shipment_service_id Int                            @id @default(autoincrement())
-  shipment_id         Int
-  service_id          Int
-  service_name        String                         @db.VarChar(255)
-  service_description String?                        @db.Text
-  service_price       Decimal                        @db.Decimal(10, 2)
-  service_status      shipmentservice_service_status
-  created_at          DateTime?                      @default(now()) @db.Timestamp(0)
-  updated_at          DateTime?                      @default(now()) @db.Timestamp(0)
-  shipment            shipment                       @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "shipmentservice_ibfk_1")
 
   @@index([shipment_id], map: "shipment_id")
 }
@@ -140,37 +99,16 @@ model user {
   shipment      shipment[]
 }
 
-model shipfrom {
-  shipfrom_id    Int     @id @default(autoincrement())
-  first_name     String  @db.VarChar(255)
-  last_name      String  @db.VarChar(255)
-  email          String  @unique(map: "email") @db.VarChar(255)
-  phone_number   String  @db.VarChar(20)
-  pincode        String? @db.VarChar(10)
-  city           String? @db.VarChar(100)
-  locality       String? @db.VarChar(100)
-  address_line_2 String? @db.VarChar(255)
-  address_line_1 String  @db.VarChar(255)
+model Courier {
+  courier_id   Int           @id @default(autoincrement())
+  name         String        @db.VarChar(100)
+  vehicle_id   String        @db.VarChar(100)
+  phone_number String        @db.VarChar(20)
+  rating       Decimal?      @db.Decimal(3, 2)
+  status       CourierStatus @default(OFFLINE)
 }
 
-/// This model or at least one of its fields has comments in the database, and requires an additional setup for migrations: Read more: https://pris.ly/d/database-comments
-model shipto {
-  shipto_id      Int     @id @default(autoincrement())
-  first_name     String  @db.VarChar(255)
-  last_name      String  @db.VarChar(255)
-  email          String  @unique(map: "email") @db.VarChar(255)
-  phone_number   String  @db.VarChar(20)
-  pincode        String? @db.VarChar(10)
-  city           String? @db.VarChar(100)
-  locality       String? @db.VarChar(100)
-  address_line_2 String? @db.VarChar(255)
-  address_line_1 String  @db.VarChar(255)
-  company        String? @db.VarChar(255)
-}
-
-enum shipmentservice_service_status {
-  pending
-  in_progress
-  completed
-  cancelled
+enum CourierStatus {
+  ON_DELIVERY
+  OFFLINE
 }
