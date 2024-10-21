@@ -4,7 +4,7 @@ import { payment } from './payment.model';
 import { Prisma } from '@prisma/client';
 @Injectable()
 export class PaymentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
   async getAllPayments(): Promise<payment[]> {
     return this.prisma.payment.findMany();
   }
@@ -28,7 +28,6 @@ export class PaymentService {
         amount: data.amount ?? undefined, // Update amount if provided
         payment_method: data.payment_method ?? undefined, // Update payment_method if provided
         payment_status: data.payment_status ?? undefined, // Update payment_status if provided
-        updated_at: new Date(), // Always set updated_at to current date
         shipment: data.shipment
           ? {
               connect: { shipment_id: data.shipment.connect?.shipment_id }, // Use 'connect' to link the shipment

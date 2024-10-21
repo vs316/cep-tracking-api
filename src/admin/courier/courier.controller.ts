@@ -1,6 +1,5 @@
 /* eslint-disable prettier/prettier */
 import {
-  BadRequestException,
   Body,
   Controller,
   Delete,
@@ -13,10 +12,10 @@ import {
 } from '@nestjs/common';
 import { CourierService } from './courier.service';
 import { Request, Response } from 'express';
-import { Courier } from './courier.model';
+import { couriers } from './courier.model';
 import { $Enums } from '@prisma/client';
 import { Decimal } from '@prisma/client/runtime/library';
-@Controller('courier')
+@Controller('couriers')
 export class CourierController {
   constructor(private readonly CourierService: CourierService) {}
 
@@ -41,53 +40,46 @@ export class CourierController {
       vehicle_id: string;
       phone_number: string;
       rating: Decimal;
-      status: $Enums.CourierStatus;
+      status?: $Enums.couriers_status;
+      email: string;
     },
-  ): Promise<Courier> {
+  ): Promise<couriers> {
     console.log(postData);
-    if (
-      !postData.name ||
-      !postData.vehicle_id ||
-      !postData.phone_number ||
-      !postData.rating ||
-      !postData.status
-    ) {
-      throw new BadRequestException('Courier data is required.');
-    }
     const createdCourier = await this.CourierService.createCourier({
       name: postData.name,
       vehicle_id: postData.vehicle_id,
       phone_number: postData.phone_number,
       rating: postData.rating,
       status: postData.status,
+      email: postData.email,
     });
     return createdCourier;
   }
 
-  @Get(':uuid')
-  async getCourier(@Param('courier_id') CourierId: number): Promise<Courier> {
+  @Get(':courier_id')
+  async getCourier(@Param('courier_id') CourierId: number): Promise<couriers> {
     return this.CourierService.getCourier(CourierId);
   }
 
-  @Get(':Courier_id')
+  @Get(':courier_id')
   async getCourierById(
-    @Param('Courier_id') CourierId: number,
-  ): Promise<Courier> {
+    @Param('courier_id') CourierId: number,
+  ): Promise<couriers> {
     return this.CourierService.getCourierById(CourierId);
   }
 
-  @Delete(':Courier_id')
+  @Delete(':courier_id')
   async deleteCourier(
-    @Param('Courier_id') Courier_id: number,
-  ): Promise<Courier> {
+    @Param('courier_id') Courier_id: number,
+  ): Promise<couriers> {
     return this.CourierService.deleteCourier(Courier_id);
   }
 
-  @Put(':Courier_id')
+  @Put(':courier_id')
   async updateCourier(
-    @Param('Courier_id') Courier_id: number,
-    @Body() data: Courier,
-  ): Promise<Courier> {
+    @Param('courier_id') Courier_id: number,
+    @Body() data: couriers,
+  ): Promise<couriers> {
     return this.CourierService.updateCourier(Courier_id, data);
   }
 }

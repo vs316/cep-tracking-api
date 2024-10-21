@@ -7,28 +7,16 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model Admin {
-  admin_id   Int      @id @default(autoincrement())
-  uuid       String   @unique @default(uuid()) @db.VarChar(36)
-  username   String   @unique
-  email      String   @unique
-  password   String
-  created_at DateTime @default(now()) @db.DateTime(0)
-  updated_at DateTime @default(now()) @updatedAt @db.DateTime(0)
-}
-
 model address {
-  address_id                                 Int        @id @default(autoincrement())
-  address_line_1                             String     @db.VarChar(255)
-  address_line_2                             String?    @db.VarChar(255)
-  locality                                   String?    @db.VarChar(100)
-  city                                       String?    @db.VarChar(100)
-  state                                      String?    @db.VarChar(100)
-  pincode                                    String?    @db.VarChar(10)
-  uuid                                       String
-  user                                       user       @relation("UserAddresses", fields: [uuid], references: [uuid])
-  shipment_shipment_from_address_idToaddress shipment[] @relation("shipment_from_address_idToaddress")
-  shipment_shipment_to_address_idToaddress   shipment[] @relation("shipment_to_address_idToaddress")
+  address_id     Int     @id @default(autoincrement())
+  address_line_1 String  @db.VarChar(255)
+  address_line_2 String? @db.VarChar(255)
+  locality       String? @db.VarChar(100)
+  city           String? @db.VarChar(100)
+  state          String? @db.VarChar(100)
+  pincode        String? @db.VarChar(10)
+  uuid           String
+  user           user    @relation("UserAddresses", fields: [uuid], references: [uuid])
 
   @@index([uuid], map: "address_uuid_fkey")
 }
@@ -40,33 +28,60 @@ model payment {
   payment_method String?   @db.VarChar(50)
   payment_status String?   @db.VarChar(50)
   created_at     DateTime? @default(now()) @db.DateTime(0)
-  updated_at     DateTime? @db.DateTime(0)
   shipment       shipment? @relation(fields: [shipment_id], references: [shipment_id], onDelete: NoAction, onUpdate: NoAction, map: "payment_ibfk_1")
 
   @@index([shipment_id], map: "shipment_id")
 }
 
 model shipment {
-  shipment_id                               Int       @id @default(autoincrement())
-  user_id                                   Int?
-  from_address_id                           Int?
-  to_address_id                             Int?
-  shipment_type                             String?   @db.VarChar(50)
-  status                                    String?   @db.VarChar(50)
-  is_draft                                  Boolean?  @default(false)
-  is_finalized                              Boolean?  @default(false)
-  created_at                                DateTime? @default(now()) @db.DateTime(0)
-  updated_at                                DateTime? @updatedAt @db.DateTime(0)
-  payment                                   payment[]
-  user                                      user?     @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
-  address_shipment_from_address_idToaddress address?  @relation("shipment_from_address_idToaddress", fields: [from_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
-  address_shipment_to_address_idToaddress   address?  @relation("shipment_to_address_idToaddress", fields: [to_address_id], references: [address_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
-
-  shipmentitem shipmentitem[]
+  shipment_id     Int            @id @default(autoincrement())
+  user_id         Int?
+  from_address_id Int?
+  to_address_id   Int?
+  shipment_type   String?        @db.VarChar(50)
+  status          String?        @db.VarChar(50)
+  is_draft        Boolean?       @default(false)
+  is_finalized    Boolean?       @default(false)
+  created_at      DateTime?      @default(now()) @db.DateTime(0)
+  updated_at      DateTime?      @updatedAt @db.DateTime(0)
+  payment         payment[]
+  user            user?          @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
+  shipfrom        shipfrom?      @relation(fields: [from_address_id], references: [shipfrom_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
+  shipto          shipto?        @relation(fields: [to_address_id], references: [shipto_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
+  shipmentitem    shipmentitem[]
 
   @@index([from_address_id], map: "from_address_id")
   @@index([to_address_id], map: "to_address_id")
   @@index([user_id], map: "shipment_ibfk_1")
+}
+
+model shipto {
+  shipto_id      Int        @id @default(autoincrement())
+  company        String?    @db.VarChar(50)
+  first_name     String?    @db.VarChar(50)
+  last_name      String?    @db.VarChar(50)
+  email          String?    @db.VarChar(100)
+  phone_number   String?    @db.VarChar(50)
+  pincode        String?    @db.VarChar(50)
+  city           String?    @db.VarChar(50)
+  locality       String?    @db.VarChar(50)
+  address_line_1 String?    @db.VarChar(50)
+  address_line_2 String?    @db.VarChar(50)
+  shipment       shipment[]
+}
+
+model shipfrom {
+  shipfrom_id    Int        @id @default(autoincrement())
+  first_name     String?    @db.VarChar(50)
+  last_name      String?    @db.VarChar(50)
+  email          String?    @db.VarChar(100)
+  phone_number   String?    @db.VarChar(50)
+  pincode        String?    @db.VarChar(50)
+  city           String?    @db.VarChar(50)
+  locality       String?    @db.VarChar(50)
+  address_line_1 String?    @db.VarChar(50)
+  address_line_2 String?    @db.VarChar(50)
+  shipment       shipment[]
 }
 
 model shipmentitem {
@@ -85,7 +100,6 @@ model shipmentitem {
 
 model user {
   user_id       Int        @id @default(autoincrement())
-  uuid          String     @unique @default(uuid()) @db.VarChar(36)
   first_name    String     @db.VarChar(255)
   last_name     String     @db.VarChar(255)
   email         String     @unique(map: "email") @db.VarChar(255)
@@ -95,20 +109,39 @@ model user {
   updated_at    DateTime   @default(now()) @updatedAt @db.DateTime(0)
   emailVerified Boolean    @default(false)
   phoneVerified Boolean    @default(false)
+  uuid          String     @unique @default(uuid()) @db.VarChar(36)
   addresses     address[]  @relation("UserAddresses")
   shipment      shipment[]
 }
 
-model Courier {
-  courier_id   Int           @id @default(autoincrement())
-  name         String        @db.VarChar(100)
-  vehicle_id   String        @db.VarChar(100)
-  phone_number String        @db.VarChar(20)
-  rating       Decimal?      @db.Decimal(3, 2)
-  status       CourierStatus @default(OFFLINE)
+model admin {
+  admin_id   Int      @id @default(autoincrement())
+  uuid       String   @unique(map: "Admin_uuid_key") @db.VarChar(36)
+  username   String   @unique(map: "Admin_username_key")
+  email      String   @unique(map: "Admin_email_key")
+  password   String
+  created_at DateTime @default(now()) @db.DateTime(0)
+  updated_at DateTime @default(now()) @db.DateTime(0)
 }
 
-enum CourierStatus {
+model couriers {
+  courier_id   Int              @id @default(autoincrement())
+  name         String?          @db.VarChar(100)
+  vehicle_id   String?          @db.VarChar(100)
+  phone_number String?          @db.VarChar(20)
+  rating       Decimal?         @db.Decimal(3, 2)
+  status       couriers_status? @default(OFFLINE)
+  gender       couriers_gender?
+  email        String?          @db.VarChar(100)
+  surname      String?          @db.VarChar(100)
+}
+
+enum couriers_status {
   ON_DELIVERY
   OFFLINE
+}
+
+enum couriers_gender {
+  MALE
+  FEMALE
 }

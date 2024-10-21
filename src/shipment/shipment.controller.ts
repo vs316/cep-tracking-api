@@ -1,59 +1,51 @@
-/* eslint-disable prettier/prettier */
+// shipment.controller.ts
 import {
-  Body,
   Controller,
-  Delete,
-  Get,
-  Param,
   Post,
   Put,
-  Req,
-  Res,
+  Body,
+  Param,
+  NotFoundException,
 } from '@nestjs/common';
-import { shipment } from './shipment.model';
 import { ShipmentService } from './shipment.service';
-import { Request, Response } from 'express';
+import { CreateShipmentDto } from './create-shipment.dto';
+import { ShipmentItemDto } from './shipmentitem/shipment-item.dto';
 
-@Controller('shipment')
+@Controller('shipments')
 export class ShipmentController {
   constructor(private readonly shipmentService: ShipmentService) {}
 
-  @Get()
-  async getAllShipments(
-    @Req() request: Request,
-    @Res() response: Response,
-  ): Promise<any> {
-    const result = await this.shipmentService.getAllShipments();
-    return response.status(200).json({
-      status: 'Ok!',
-      message: 'Successfully fetched data!',
-      result: result,
-    });
-  }
-  @Post()
-  async postShipment(@Body() postData: shipment): Promise<shipment> {
-    return this.shipmentService.createShipment(postData);
+  // Step 1: Create a pending shipment before payment
+  @Post('pending')
+  async createPendingShipment(@Body() createShipmentDto: CreateShipmentDto) {
+    const shipFrom = await this.shipmentService.createShipFrom(
+      createShipmentDto.shipfrom,
+    );
+    const shipTo = await this.shipmentService.createShipTo(
+      createShipmentDto.shipto,
+    );
+    const shipment = await this.shipmentService.createPendingShipment(
+      shipFrom.shipfrom_id,
+      shipTo.shipto_id,
+    );
+
+    return { shipmentId: shipment.shipment_id }; // Return the shipment ID for later use
   }
 
-  @Get(':shipment_id')
-  async getShipment(
-    @Param('shipment_id') shipment_id: number,
-  ): Promise<shipment | null> {
-    return this.shipmentService.getShipment(shipment_id);
-  }
+  // Step 2: Complete the shipment after successful payment
+  @Put('complete/:id')
+  async completeShipment(
+    @Param('id') shipmentId: number,
+    @Body() shipmentItems: ShipmentItemDto[],
+  ) {
+    const shipment = await this.shipmentService.findById(shipmentId);
 
-  @Delete(':shipment_id')
-  async deleteShipment(
-    @Param('shipment_id') shipment_id: number,
-  ): Promise<shipment> {
-    return this.shipmentService.deleteShipment(shipment_id);
-  }
+    if (!shipment) {
+      throw new NotFoundException('Shipment not found');
+    }
 
-  @Put(':shipment_id')
-  async updateShipment(
-    @Param('shipment_id') shipment_id: number,
-    @Body() data: shipment,
-  ): Promise<shipment> {
-    return this.shipmentService.updateShipment(shipment_id, data);
+    // Add shipment items and finalize the order
+    await this.shipmentService.addShipmentItems(shipmentId, shipmentItems);
+    return await this.shipmentService.markAsCompleted(shipmentId);
   }
 }

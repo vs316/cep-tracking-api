@@ -44,7 +44,7 @@ export class ShipToController {
       !postData.city ||
       !postData.pincode
     ) {
-      throw new BadRequestException('User data is required.');
+      throw new BadRequestException('ShipTo data is required.');
     }
 
     const createdShipTo = await this.ShipToService.createShipToDetails({

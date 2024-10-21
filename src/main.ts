@@ -2,16 +2,22 @@
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
-import { ConfigService } from '@nestjs/config';
+//import { ConfigService } from '@nestjs/config';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   app.useGlobalPipes(new ValidationPipe()); // Use ValidationPipe here
-  const configService = app.get(ConfigService);
+  //const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: configService.get<string>('FRONTEND_URL'), // Use the environment variable
-    methods: ['GET', 'POST', 'PUT', 'DELETE'],
+    origin: process.env.ALLOWED_ORIGINS.split(','),
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Including OPTIONS
+    allowedHeaders: [
+      'Content-Type',
+      'Authorization',
+      'X-Requested-With',
+      'Accept',
+    ], // Allow required headers
     credentials: true,
   });
 

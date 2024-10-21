@@ -12,13 +12,11 @@ export class shipment implements Prisma.shipmentCreateInput {
   created_at?: string | Date;
   updated_at?: string | Date;
 
+  // Prisma relationship inputs for nested connections
   payment?: Prisma.paymentCreateNestedManyWithoutShipmentInput;
   user?: Prisma.userCreateNestedOneWithoutShipmentInput;
-  address_shipment_from_address_idToaddress?: Prisma.addressCreateNestedOneWithoutShipment_shipment_from_address_idToaddressInput;
-  address_shipment_to_address_idToaddress?: Prisma.addressCreateNestedOneWithoutShipment_shipment_to_address_idToaddressInput;
-  shipmentcase?: Prisma.shipmentcaseCreateNestedManyWithoutShipmentInput;
-  shipmentdocument?: Prisma.shipmentdocumentCreateNestedManyWithoutShipmentInput;
-  shipmentitem?: Prisma.shipmentitemCreateNestedManyWithoutShipmentInput;
-  shipmentnotification?: Prisma.shipmentnotificationCreateNestedManyWithoutShipmentInput;
-  shipmentservice?: Prisma.shipmentserviceCreateNestedManyWithoutShipmentInput;
+
+  // These will reference the address from 'shipfrom' and 'shipto'
+  address_shipment_from_address_idToaddress?: Prisma.shipfromCreateNestedOneWithoutShipmentInput;
+  address_shipment_to_address_idToaddress?: Prisma.shiptoCreateNestedOneWithoutShipmentInput;
 }

@@ -7,6 +7,5 @@ export class payment implements Prisma.paymentCreateInput {
   payment_method?: string | null;
   payment_status?: string | null;
   created_at?: string | Date | null;
-  updated_at?: string | Date | null;
   shipment?: Prisma.shipmentCreateNestedOneWithoutPaymentInput | null;
 }

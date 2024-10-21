@@ -37,10 +37,6 @@ import { AddressModule } from './address/address.module';
 import { ShipmentModule } from './shipment/shipment.module';
 import { PaymentModule } from './payment/payment.module';
 import { ShipmentItemModule } from './shipment/shipmentitem/shipmentitem.module';
-import { ShipmentServiceModule } from './shipment/shipmentservice/shipmentservice.module';
-import { ShipmentNotificationModule } from './shipment/shipmentnotification/shipmentservice.module';
-import { ShipmentDocumentModule } from './shipment/shipmentdocument/shipmentdocument.module';
-import { ShipmentCaseModule } from './shipment/shipmentcase/shipmentcase.module';
 import { ShipFromModule } from './shipment/shipfrom/shipfrom.module';
 import { ShipToModule } from './shipment/shipto/shipto.module';
 import { AdminModule } from './admin/administrator/admin.module';
@@ -55,10 +51,6 @@ import { CourierModule } from './admin/courier/courier.module';
     AddressModule,
     ShipmentModule,
     ShipmentItemModule,
-    ShipmentServiceModule,
-    ShipmentNotificationModule,
-    ShipmentDocumentModule,
-    ShipmentCaseModule,
     PaymentModule,
     ShipFromModule,
     ShipToModule,
