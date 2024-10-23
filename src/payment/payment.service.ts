@@ -42,4 +42,23 @@ export class PaymentService {
       where: { payment_id: Number(payment_id) },
     });
   }
+
+  async getPaymentsWithinDateRange(
+    startDate: Date,
+    endDate: Date,
+  ): Promise<payment[]> {
+    try {
+      return this.prisma.payment.findMany({
+        where: {
+          created_at: {
+            gte: startDate,
+            lt: endDate,
+          },
+        },
+      });
+    } catch (error) {
+      console.error('Error fetching payments:', error);
+      throw new Error('Could not fetch payments');
+    }
+  }
 }

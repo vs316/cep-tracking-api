@@ -3,10 +3,27 @@ import { Injectable } from '@nestjs/common';
 import { PrismaService } from 'src/prisma/prisma.service';
 import { user } from './user.model';
 //import { address } from '../address/address.model'; // Import the address model
+// Helper function to convert to IST
+const convertToIST = (date: Date): Date => {
+  const istOffset = 5.5 * 60 * 60 * 1000; // IST is UTC+5:30
+  const istDate = new Date(date.getTime() + istOffset);
+  return istDate;
+};
 
 @Injectable()
 export class UsersService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
+  async getNewCustomers(startDate: Date, endDate: Date): Promise<user[]> {
+    // This method should interact with your database to fetch new customers based on created_at
+    return this.prisma.user.findMany({
+      where: {
+        created_at: {
+          gte: startDate,
+          lte: endDate,
+        },
+      },
+    });
+  }
 
   async getAllUsers(): Promise<user[]> {
     return this.prisma.user.findMany();
@@ -24,6 +41,12 @@ export class UsersService {
     // addresses: address[],
   ): Promise<user> {
     // First, create the user
+    // Get current date and time in UTC
+    const currentDate = new Date();
+
+    // Convert the current date to IST
+    const createdAtIST = convertToIST(currentDate);
+    const updatedAtIST = convertToIST(currentDate);
     const user = await this.prisma.user.create({
       data: {
         first_name: userData.first_name, // Ensure first_name is passed
@@ -32,8 +55,12 @@ export class UsersService {
         phone_number: userData.phone_number,
         password: userData.password,
         uuid: userData.uuid,
+        created_at: createdAtIST, // Save IST date
+        updated_at: updatedAtIST, // Save IST date
       },
     });
+
+    return user;
 
     // Then, create the addresses and link them to the user
     // const addressPromises = addresses.map((address) =>
@@ -51,7 +78,6 @@ export class UsersService {
     // );
 
     // await Promise.all(addressPromises);
-    return user;
   }
 
   async updateUser(user_id: number, data: user): Promise<user> {

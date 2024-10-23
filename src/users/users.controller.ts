@@ -8,6 +8,7 @@ import {
   Param,
   Post,
   Put,
+  Query,
   Req,
   Res,
 } from '@nestjs/common';
@@ -16,6 +17,7 @@ import { Request, Response } from 'express';
 import { user } from './user.model';
 import { address } from '../address/address.model'; // Import the address model
 import { AddressService } from 'src/address/address.service';
+import dayjs from 'dayjs';
 @Controller('user')
 export class UsersController {
   constructor(
@@ -34,6 +36,45 @@ export class UsersController {
       message: 'Successfully fetched data!',
       result: result,
     });
+  }
+
+  @Get('new-customers')
+  async getNewCustomers(
+    @Query('start') start: string,
+    @Query('end') end: string,
+    @Res() response: Response,
+  ): Promise<any> {
+    const startDate = dayjs(start).toDate();
+    const endDate = dayjs(end).toDate();
+
+    // Fetch payments within the date range
+    const newcustomers = await this.usersService.getNewCustomers(
+      startDate,
+      endDate,
+    );
+
+    return response.status(200).json({
+      status: 'Ok!',
+      message: 'Successfully fetched data!',
+      data: newcustomers,
+    });
+  }
+  // Helper function to parse date in YYYY-MM-DD format
+  private parseDateString(dateString: string): Date | null {
+    const dateRegex = /^\d{4}-\d{2}-\d{2}$/; // Expecting YYYY-MM-DD format
+
+    if (!dateRegex.test(dateString)) {
+      return null;
+    }
+
+    const date = new Date(dateString);
+
+    // Check if the date is valid
+    if (isNaN(date.getTime())) {
+      return null;
+    }
+
+    return date;
   }
 
   @Post()

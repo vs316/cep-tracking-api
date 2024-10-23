@@ -15,7 +15,6 @@ COPY . .
 
 # Build the application
 RUN npm run build
-RUN apt-get update && apt-get install -y default-mysql-client
 
 # Stage 2: Run the application
 FROM node:18 AS production
