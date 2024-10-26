@@ -47,7 +47,7 @@ model shipment {
   payment         payment[]
   user            user?          @relation(fields: [user_id], references: [user_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_1")
   shipfrom        shipfrom?      @relation(fields: [from_address_id], references: [shipfrom_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_2")
-  shipto          shipto?        @relation(fields: [to_address_id], references: [shipto_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
+  shipto          shipto?         @relation(fields: [to_address_id], references: [shipto_id], onDelete: NoAction, onUpdate: NoAction, map: "shipment_ibfk_3")
   shipmentitem    shipmentitem[]
 
   @@index([from_address_id], map: "from_address_id")

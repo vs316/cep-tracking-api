@@ -142,6 +142,32 @@ export class UsersController {
   async getUserById(@Param('user_id') userId: number): Promise<user> {
     return this.usersService.getUserById(userId);
   }
+  @Get('id/:uuid')
+  async getUserIdByUuid(
+    @Param('uuid') uuid: string,
+    @Res() response: Response,
+  ): Promise<any> {
+    try {
+      const user = await this.usersService.getUserIdByUuid(uuid);
+      if (!user) {
+        return response.status(404).json({
+          status: 'Error',
+          message: 'User not found',
+        });
+      }
+      return response.status(200).json({
+        status: 'Ok!',
+        message: 'Successfully fetched user ID',
+        user_id: user.user_id,
+      });
+    } catch (error) {
+      return response.status(500).json({
+        status: 'Error',
+        message: 'Failed to fetch user ID',
+        error: (error as Error).message,
+      });
+    }
+  }
 
   @Delete(':user_id')
   async deleteUser(@Param('user_id') user_id: number): Promise<user> {

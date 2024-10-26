@@ -98,4 +98,10 @@ export class UsersService {
       where: { user_id: Number(user_id) },
     });
   }
+  async getUserIdByUuid(uuid: string): Promise<{ user_id: number } | null> {
+    return this.prisma.user.findUnique({
+      where: { uuid },
+      select: { user_id: true },
+    });
+  }
 }

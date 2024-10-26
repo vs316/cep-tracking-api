@@ -1,51 +1,101 @@
 // shipment.controller.ts
 import {
   Controller,
+  Get,
   Post,
-  Put,
   Body,
+  Patch,
   Param,
-  NotFoundException,
+  Delete,
+  Query,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ShipmentService } from './shipment.service';
-import { CreateShipmentDto } from './create-shipment.dto';
-import { ShipmentItemDto } from './shipmentitem/shipment-item.dto';
+import { ShipmentWithRelations } from './shipment.types';
+import { Prisma } from '@prisma/client';
 
+type ShipmentCreateInput = Prisma.shipmentCreateInput;
 @Controller('shipments')
 export class ShipmentController {
   constructor(private readonly shipmentService: ShipmentService) {}
 
-  // Step 1: Create a pending shipment before payment
-  @Post('pending')
-  async createPendingShipment(@Body() createShipmentDto: CreateShipmentDto) {
-    const shipFrom = await this.shipmentService.createShipFrom(
-      createShipmentDto.shipfrom,
-    );
-    const shipTo = await this.shipmentService.createShipTo(
-      createShipmentDto.shipto,
-    );
-    const shipment = await this.shipmentService.createPendingShipment(
-      shipFrom.shipfrom_id,
-      shipTo.shipto_id,
-    );
-
-    return { shipmentId: shipment.shipment_id }; // Return the shipment ID for later use
+  @Post()
+  async create(
+    @Body() createShipmentDto: ShipmentCreateInput,
+  ): Promise<ShipmentWithRelations> {
+    return this.shipmentService.create(createShipmentDto);
   }
 
-  // Step 2: Complete the shipment after successful payment
-  @Put('complete/:id')
-  async completeShipment(
-    @Param('id') shipmentId: number,
-    @Body() shipmentItems: ShipmentItemDto[],
-  ) {
-    const shipment = await this.shipmentService.findById(shipmentId);
+  @Post('complete')
+  async createComplete(
+    @Body() data: { userId: number; shipmentData: ShipmentCreateInput },
+  ): Promise<ShipmentWithRelations> {
+    return this.shipmentService.createCompleteShipment(
+      data.userId,
+      data.shipmentData,
+    );
+  }
 
-    if (!shipment) {
-      throw new NotFoundException('Shipment not found');
-    }
+  @Get()
+  async findAll(
+    @Query('skip') skip?: string,
+    @Query('take') take?: string,
+    @Query('userId') userId?: string,
+    @Query('status') status?: string,
+    @Query('startDate') startDate?: string, // Add startDate query param
+    @Query('endDate') endDate?: string, // Add endDate query param
+  ): Promise<ShipmentWithRelations[]> {
+    const params = {
+      skip: skip ? parseInt(skip) : undefined,
+      take: take ? parseInt(take) : undefined,
+      where: {
+        ...(userId && { user_id: parseInt(userId) }),
+        ...(status && { status }),
+      },
+      orderBy: { created_at: 'desc' as const },
+      // Parse the date strings into JavaScript Date objects
+      startDate: startDate ? new Date(startDate) : undefined,
+      endDate: endDate ? new Date(endDate) : undefined,
+    };
+    return this.shipmentService.findAll(params);
+  }
 
-    // Add shipment items and finalize the order
-    await this.shipmentService.addShipmentItems(shipmentId, shipmentItems);
-    return await this.shipmentService.markAsCompleted(shipmentId);
+  @Get(':id')
+  async findOne(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ShipmentWithRelations | null> {
+    return this.shipmentService.findOne({ shipment_id: id });
+  }
+
+  @Patch(':id')
+  async update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() data: Prisma.shipmentUpdateInput,
+  ): Promise<ShipmentWithRelations> {
+    return this.shipmentService.update({
+      where: { shipment_id: id },
+      data,
+    });
+  }
+
+  @Delete(':id')
+  async delete(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ShipmentWithRelations> {
+    return this.shipmentService.delete({ shipment_id: id });
+  }
+
+  @Post('draft')
+  async createDraft(
+    @Body('userId', ParseIntPipe) userId: number,
+  ): Promise<ShipmentWithRelations> {
+    return this.shipmentService.createDraftShipment(userId);
+  }
+
+  @Post(':id/finalize')
+  async finalizeShipment(
+    @Param('id', ParseIntPipe) id: number,
+  ): Promise<ShipmentWithRelations> {
+    return this.shipmentService.finalizeShipment(id);
   }
 }

@@ -19,18 +19,18 @@ import dayjs from 'dayjs';
 export class PaymentController {
   constructor(private readonly paymentService: PaymentService) {}
 
-  // @Get()
-  // async getAllPayments(
-  //   @Req() request: Request,
-  //   @Res() response: Response,
-  // ): Promise<any> {
-  //   const result = await this.paymentService.getAllPayments();
-  //   return response.status(200).json({
-  //     status: 'Ok!',
-  //     message: 'Successfully fetched data!',
-  //     result: result,
-  //   });
-  // }
+  @Get()
+  async getAllPayments(
+    @Req() request: Request,
+    @Res() response: Response,
+  ): Promise<any> {
+    const result = await this.paymentService.getAllPayments();
+    return response.status(200).json({
+      status: 'Ok!',
+      message: 'Successfully fetched data!',
+      result: result,
+    });
+  }
   @Post()
   async postPayment(@Body() postData: payment): Promise<payment> {
     return this.paymentService.createPayment(postData);
@@ -57,7 +57,7 @@ export class PaymentController {
   ): Promise<payment> {
     return this.paymentService.updatePayment(payment_id, data);
   }
-  @Get()
+  @Get('dailyrevenue')
   async getPaymentsWithinDateRange(
     @Query('start') start: string,
     @Query('end') end: string,
