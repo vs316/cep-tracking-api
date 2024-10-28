@@ -5,7 +5,7 @@ import { Prisma } from '@prisma/client';
 import { ShipmentCreateInput } from './shipment.model';
 @Injectable()
 export class ShipmentService {
-  constructor(private prisma: PrismaService) {}
+  constructor(private readonly prisma: PrismaService) {}
 
   async create(data: ShipmentCreateInput): Promise<ShipmentWithRelations> {
     const {
@@ -141,7 +141,22 @@ export class ShipmentService {
       },
     });
   }
-
+  async findShipmentsByUserId(
+    userId: number,
+  ): Promise<ShipmentWithRelations[]> {
+    return this.prisma.shipment.findMany({
+      where: { user_id: userId },
+      include: {
+        // Include any related entities you need (e.g., user, item details, etc.)
+        payment: true,
+        user: true,
+        shipfrom: true,
+        shipto: true,
+        shipmentitem: true,
+      },
+      orderBy: { created_at: 'desc' },
+    });
+  }
   async update(params: {
     where: Prisma.shipmentWhereUniqueInput;
     data: Prisma.shipmentUpdateInput;

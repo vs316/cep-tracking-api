@@ -1,4 +1,3 @@
-/* eslint-disable prettier/prettier */
 import { ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
@@ -10,7 +9,16 @@ async function bootstrap() {
   //const configService = app.get(ConfigService);
 
   app.enableCors({
-    origin: process.env.ALLOWED_ORIGINS.split(','),
+    // origin: (origin, callback) => {
+    //   const allowedOrigins = process.env.ALLOWED_ORIGINS.split(',');
+    //   if (!origin || allowedOrigins.includes(origin)) {
+    //     callback(null, true);
+    //   } else {
+    //     console.warn(`CORS error: ${origin} not allowed`);
+    //     callback(new Error('Not allowed by CORS'));
+    //   }
+    // },
+    origin: ['http://localhost:3001', 'http://localhost:5173'],
     methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS', 'PATCH'], // Including OPTIONS
     allowedHeaders: [
       'Content-Type',

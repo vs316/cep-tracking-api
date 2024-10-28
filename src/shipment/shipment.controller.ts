@@ -67,6 +67,13 @@ export class ShipmentController {
     return this.shipmentService.findOne({ shipment_id: id });
   }
 
+  @Get('user/:user_id')
+  async findByUserId(
+    @Param('user_id', ParseIntPipe) userId: number,
+  ): Promise<ShipmentWithRelations[]> {
+    return this.shipmentService.findShipmentsByUserId(userId);
+  }
+
   @Patch(':id')
   async update(
     @Param('id', ParseIntPipe) id: number,

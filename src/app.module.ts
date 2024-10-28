@@ -41,6 +41,7 @@ import { ShipFromModule } from './shipment/shipfrom/shipfrom.module';
 import { ShipToModule } from './shipment/shipto/shipto.module';
 import { AdminModule } from './admin/administrator/admin.module';
 import { CourierModule } from './admin/courier/courier.module';
+import { OrdersModule } from './shipment/orders.module';
 @Module({
   imports: [
     ConfigModule.forRoot({
@@ -56,6 +57,7 @@ import { CourierModule } from './admin/courier/courier.module';
     ShipToModule,
     AdminModule,
     CourierModule,
+    OrdersModule,
     // Add other modules here
   ],
   controllers: [AppController],

@@ -4,7 +4,7 @@ services:
       context: .
     environment:
       - DATABASE_URL=mysql://root:admin@db:3306/cep_tracking
-      - ALLOWED_ORIGINS=http://host.docker.internal:3001,http://host.docker.internal:5173
+      - ALLOWED_ORIGINS=http://host.docker.internal:3001,http://localhost:5173
     ports:
       - '3000:3000'
     depends_on:
@@ -15,5 +15,12 @@ services:
     environment:
       MYSQL_ROOT_PASSWORD: admin
       MYSQL_DATABASE: cep_tracking
+      MYSQL_ROOT_HOST: '%' # Add this to allow connections from any host
     ports:
-      - '3306:3306'
+      - '3307:3306'
+    volumes:
+      - db_data:/var/lib/mysql
+    hostname: 'auxDB'
+volumes:
+  db_data:
+    driver: local
