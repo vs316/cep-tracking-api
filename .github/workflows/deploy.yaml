@@ -1,0 +1,35 @@
+# yaml-language-server: disable
+
+name: Deploy to Kubernetes
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Log in to DockerHub
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+
+      - name: Build and push Docker images
+        run: |
+          docker build -t vs316/cep-tracking-api-app:latest .
+          docker push vs316/cep-tracking-api-app:latest
+
+      - name: Set up Kubernetes
+        uses: azure/setup-kubectl@v2
+        with:
+          version: 'latest'
+
+      - name: Deploy to Kubernetes
+        run: |
+          kubectl apply -f ./K8s/config/app-deployment.yaml
+          kubectl apply -f ./K8s/config/db-deployment.yaml
+          kubectl apply -f ./K8s/services/app-service.yaml
+          kubectl apply -f ./K8s/services/db-service.yaml

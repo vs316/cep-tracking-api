@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: app
+spec:
+  replicas: 3 # Specify the number of replicas for scalability
+  selector:
+    matchLabels:
+      app: app
+  template:
+    metadata:
+      labels:
+        app: app
+    spec:
+      containers:
+        - name: app
+          image: vs316/cep-tracking-api-app:latest
+          ports:
+            - containerPort: 3000
+          resources:
+            requests:
+              memory: '128Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          env:
+            - name: DATABASE_URL
+              value: 'mysql://root:admin@db:3306/cep_tracking'
+            - name: ALLOWED_ORIGINS
+              value: 'http://app-service:3000'

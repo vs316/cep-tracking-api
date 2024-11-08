@@ -1,0 +1,31 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: db
+spec:
+  replicas: 1 # Only one instance since it’s a database
+  selector:
+    matchLabels:
+      app: db
+  template:
+    metadata:
+      labels:
+        app: db
+    spec:
+      containers:
+        - name: db
+          image: mysql:8
+          ports:
+            - containerPort: 3306
+          resources:
+            requests:
+              memory: '128Mi'
+              cpu: '250m'
+            limits:
+              memory: '512Mi'
+              cpu: '500m'
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              value: 'admin'
+            - name: MYSQL_DATABASE
+              value: 'cep_tracking'
