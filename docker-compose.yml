@@ -4,7 +4,7 @@ services:
       context: .
     environment:
       - DATABASE_URL=mysql://root:admin@db:3306/cep_tracking
-      - ALLOWED_ORIGINS=http://host.docker.internal:3001,http://localhost:5173
+      - ALLOWED_ORIGINS=http://host.localhost:3001,http://localhost:5173
     ports:
       - '3000:3000'
     depends_on:

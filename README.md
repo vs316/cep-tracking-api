@@ -83,3 +83,25 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+# Setting Up Local Development Environment
+
+## Prerequisites
+
+- Docker and Docker Compose installed
+- GNU Make installed
+
+## Commands
+
+- `make start-db`: Starts the database container.
+- `make run-migrations`: Runs the database migrations.
+- `make build-api`: Builds the REST API Docker image.
+- `make start-api`: Starts the API container and dependencies.
+- `make stop`: Stops all running containers.
+- `make clean`: Removes all containers and volumes.
+
+To start the app with the least steps:
+
+1. Run `make start-api` to start everything.
+
+   Testing

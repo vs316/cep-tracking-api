@@ -1,35 +1,44 @@
-# yaml-language-server: disable
-
-name: Deploy to Kubernetes
+name: CI Pipeline
 
 on:
   push:
+    paths:
+      - 'code/**' # Only trigger the pipeline when changes occur in the 'code' directory
     branches:
       - main
+  workflow_dispatch: # Allows manual trigger of the workflow
 
 jobs:
   build:
-    runs-on: ubuntu-latest
+    runs-on: self-hosted # Use the self-hosted runner for this job
+
     steps:
+      # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
 
+      # Set up Docker
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+
+      # Linting (replace with your preferred linter or setup)
+      - name: Run Linter
+        run: |
+          npm install -g eslint  # Install eslint
+          eslint code/  # Run linting on the 'code' directory
+
+      # Install dependencies and run tests
+      - name: Install dependencies and run tests
+        run: |
+          npm install  # Install dependencies
+          npm run test  # Run the tests
+
+      # Log in to Docker Hub
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      - name: Build and push Docker images
+      # Build and push Docker image
+      - name: Build and push Docker image
         run: |
           docker build -t vs316/cep-tracking-api-app:latest .
           docker push vs316/cep-tracking-api-app:latest
-
-      - name: Set up Kubernetes
-        uses: azure/setup-kubectl@v2
-        with:
-          version: 'latest'
-
-      - name: Deploy to Kubernetes
-        run: |
-          kubectl apply -f ./K8s/config/app-deployment.yaml
-          kubectl apply -f ./K8s/config/db-deployment.yaml
-          kubectl apply -f ./K8s/services/app-service.yaml
-          kubectl apply -f ./K8s/services/db-service.yaml
