@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     paths:
-      - 'code/**' # Only trigger the pipeline when changes occur in the 'code' directory
+      - 'cep-tracking-api/**' # Only trigger the pipeline when changes occur in this directory
     branches:
       - main
   workflow_dispatch: # Allows manual trigger of the workflow
@@ -25,7 +25,7 @@ jobs:
       - name: Run Linter
         run: |
           npm install -g eslint  # Install eslint
-          eslint code/  # Run linting on the 'code' directory
+          eslint cep-tracking-api/  # Run linting on the 'code' directory
 
       # Install dependencies and run tests
       - name: Install dependencies and run tests
