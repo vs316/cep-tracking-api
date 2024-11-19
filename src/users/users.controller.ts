@@ -11,6 +11,7 @@ import {
   Query,
   Req,
   Res,
+  Logger,
 } from '@nestjs/common';
 import { UsersService } from './users.service';
 import { Request, Response } from 'express';
@@ -20,22 +21,36 @@ import { AddressService } from 'src/address/address.service';
 import dayjs from 'dayjs';
 @Controller('user')
 export class UsersController {
+  private readonly logger = new Logger(UsersController.name);
   constructor(
     private readonly usersService: UsersService,
     private readonly addressService: AddressService,
   ) {}
 
-  @Get()
-  async getAllUsers(
+  @Get() async getAllUsers(
     @Req() request: Request,
     @Res() response: Response,
   ): Promise<any> {
-    const result = await this.usersService.getAllUsers();
-    return response.status(200).json({
-      status: 'Ok!',
-      message: 'Successfully fetched data!',
-      result: result,
-    });
+    this.logger.log('Fetching all users...');
+    try {
+      const result = await this.usersService.getAllUsers();
+      return response
+        .status(200)
+        .json({
+          status: 'Ok!',
+          message: 'Successfully fetched data!',
+          result: result,
+        });
+    } catch (error) {
+      this.logger.error('Failed to fetch users', error);
+      return response
+        .status(500)
+        .json({
+          status: 'Error',
+          message: 'Failed to fetch data',
+          error: (error as Error).message,
+        });
+    }
   }
 
   @Get('new-customers')

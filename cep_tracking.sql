@@ -64,7 +64,7 @@ CREATE TABLE `address` (
   PRIMARY KEY (`address_id`),
   KEY `address_uuid_fkey` (`uuid`),
   CONSTRAINT `address_uuid_fkey` FOREIGN KEY (`uuid`) REFERENCES `user` (`uuid`) ON DELETE RESTRICT ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -73,7 +73,7 @@ CREATE TABLE `address` (
 
 LOCK TABLES `address` WRITE;
 /*!40000 ALTER TABLE `address` DISABLE KEYS */;
-INSERT INTO `address` VALUES (1,'SRMIST Hostels','Thamarai Block','Potheri','Kattankolathur','Tamil Nadu','603203','ca0dec61-9663-4479-862a-01cb07b028ea'),(2,'Jains Avalon Springs','B Block','Potheri','Kattankolathur','Tamil Nadu','603203','ca0dec61-9663-4479-862a-01cb07b028ea'),(3,'testing','testing','testing','Elapakkam','Tamil Nadu','603201','9d867f25-4103-4e09-b75e-1c543ee80067'),(4,'asklfh','Sectore Zeta 1','Potheri','Kattankolathur','Tamil Nadu','603203','6a561275-3d20-4630-83dc-8c576f0d3402'),(5,'Purvanchal Heights, T-9, Flat-A3/107','Sector Zeta 1','Sakipur Village','Alpha Greater Noida','Uttar Pradesh','201310','1c5a6c61-9b1c-4442-a897-9f1466e36640');
+INSERT INTO `address` VALUES (1,'SRMIST Hostels','Thamarai Block','Potheri','Kattankolathur','Tamil Nadu','603203','ca0dec61-9663-4479-862a-01cb07b028ea'),(2,'Jains Avalon Springs','B Block','Potheri','Kattankolathur','Tamil Nadu','603203','ca0dec61-9663-4479-862a-01cb07b028ea'),(3,'testing','testing','testing','Elapakkam','Tamil Nadu','603201','9d867f25-4103-4e09-b75e-1c543ee80067'),(4,'asklfh','Sectore Zeta 1','Potheri','Kattankolathur','Tamil Nadu','603203','6a561275-3d20-4630-83dc-8c576f0d3402'),(5,'Purvanchal Heights, T-9, Flat-A3/107','Sector Zeta 1','Sakipur Village','Alpha Greater Noida','Uttar Pradesh','201310','1c5a6c61-9b1c-4442-a897-9f1466e36640'),(6,'Purvanchal Heights, Flat-A3/107','sdhjsdhfj','jhsfajkhf','Greater Noida','UTTAR PRADESH','201308','bde65f1d-146e-4dee-b964-9bddbca691f4'),(7,'ads','osfdofu','asfsa','Chhajarsi','Uttar Pradesh','201307','e8bfa347-eff3-4c29-96c7-180171835646');
 /*!40000 ALTER TABLE `address` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -156,7 +156,7 @@ CREATE TABLE `payment` (
   PRIMARY KEY (`payment_id`),
   KEY `shipment_id` (`shipment_id`),
   CONSTRAINT `payment_ibfk_1` FOREIGN KEY (`shipment_id`) REFERENCES `shipment` (`shipment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -165,7 +165,7 @@ CREATE TABLE `payment` (
 
 LOCK TABLES `payment` WRITE;
 /*!40000 ALTER TABLE `payment` DISABLE KEYS */;
-INSERT INTO `payment` VALUES (3,NULL,780.00,'Stripe','Success','2024-10-21 19:07:37'),(4,NULL,780.00,'Stripe','Success','2024-10-21 19:07:37'),(5,NULL,780.00,'Stripe','Success','2024-10-21 19:51:48'),(6,NULL,780.00,'Stripe','Success','2024-10-21 19:51:48'),(7,NULL,1500.00,'Stripe','Success','2024-10-23 07:14:08'),(8,7,1500.00,'CARD','PENDING','2024-10-24 05:15:11'),(9,8,1500.00,'CARD','PENDING','2024-10-24 05:16:05'),(10,9,1500.00,'CARD','PENDING','2024-10-24 12:11:47'),(11,10,780.00,'CARD','PENDING','2024-10-24 12:16:36'),(12,NULL,780.00,'Stripe','Success','2024-10-24 12:20:37'),(13,11,2000.00,'CARD','PENDING','2024-10-24 18:44:11'),(14,12,780.00,'CARD','PENDING','2024-10-26 01:47:26'),(15,NULL,780.00,'Stripe','Success','2024-10-26 01:48:05'),(16,NULL,780.00,'Stripe','Success','2024-10-26 01:51:00'),(17,13,480.00,'CARD','PENDING','2024-10-27 13:18:25'),(18,NULL,480.00,'Stripe','Success','2024-10-27 13:18:56');
+INSERT INTO `payment` VALUES (3,NULL,780.00,'Stripe','Success','2024-10-21 19:07:37'),(4,NULL,780.00,'Stripe','Success','2024-10-21 19:07:37'),(5,NULL,780.00,'Stripe','Success','2024-10-21 19:51:48'),(6,NULL,780.00,'Stripe','Success','2024-10-21 19:51:48'),(7,NULL,1500.00,'Stripe','Success','2024-10-23 07:14:08'),(8,7,1500.00,'CARD','PENDING','2024-10-24 05:15:11'),(9,8,1500.00,'CARD','PENDING','2024-10-24 05:16:05'),(10,9,1500.00,'CARD','PENDING','2024-10-24 12:11:47'),(11,10,780.00,'CARD','PENDING','2024-10-24 12:16:36'),(12,NULL,780.00,'Stripe','Success','2024-10-24 12:20:37'),(13,11,2000.00,'CARD','PENDING','2024-10-24 18:44:11'),(14,12,780.00,'CARD','PENDING','2024-10-26 01:47:26'),(15,NULL,780.00,'Stripe','Success','2024-10-26 01:48:05'),(16,NULL,780.00,'Stripe','Success','2024-10-26 01:51:00'),(17,13,480.00,'CARD','PENDING','2024-10-27 13:18:25'),(18,NULL,480.00,'Stripe','Success','2024-10-27 13:18:56'),(19,14,1380.00,'CARD','PENDING','2024-11-09 15:38:31'),(20,NULL,1380.00,'Stripe','Success','2024-11-09 15:38:54'),(21,15,1560.00,'CARD','PENDING','2024-11-09 16:38:37'),(22,16,1380.00,'CARD','PENDING','2024-11-09 16:42:31'),(23,NULL,1380.00,'Stripe','Success','2024-11-09 16:45:51'),(24,17,1380.00,'Stripe','Success','2024-11-09 16:56:15');
 /*!40000 ALTER TABLE `payment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -188,7 +188,7 @@ CREATE TABLE `shipfrom` (
   `address_line_1` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address_line_2` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`shipfrom_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -197,7 +197,7 @@ CREATE TABLE `shipfrom` (
 
 LOCK TABLES `shipfrom` WRITE;
 /*!40000 ALTER TABLE `shipfrom` DISABLE KEYS */;
-INSERT INTO `shipfrom` VALUES (1,'Vachan','Shetty','vachan316@gmail.com','9899770898','603203','Chennai','potheri','srmist hostels','thamrai'),(2,'John','Doe','john@example.com','1234567890','12345','New York','Manhattan','123 Sender Street','Apt 4B'),(3,'John','Doe','john@example.com','1234567890','12345','New York','Manhattan','123 Sender Street','Apt 4B'),(4,'John','Doe','john@example.com','1234567890','12345','New York','Manhattan','123 Sender Street','Apt 4B'),(5,'test','user 3','testuser3@example.com','5858585858','603201','testthecity','testing','testing','testing'),(6,'John','Doe','john@example.com','1234567890','123456','New York','Manhattan','123 Sender Street','Apt 4B'),(7,'Brendan','Miller','bmd@gmail.com','8998899811','603203','Chennai','xyz','Home','Roadway'),(8,'Samuel','Shetty','samuelshetty@gmail.com','3425167890','201310','Greater Noida','Sakipur Village','Purvanchal Heights,T-9, A3/107, Sector Zeta 1','Greater Noida');
+INSERT INTO `shipfrom` VALUES (1,'Vachan','Shetty','vachan316@gmail.com','9899770898','603203','Chennai','potheri','srmist hostels','thamrai'),(2,'John','Doe','john@example.com','1234567890','12345','New York','Manhattan','123 Sender Street','Apt 4B'),(3,'John','Doe','john@example.com','1234567890','12345','New York','Manhattan','123 Sender Street','Apt 4B'),(4,'John','Doe','john@example.com','1234567890','12345','New York','Manhattan','123 Sender Street','Apt 4B'),(5,'test','user 3','testuser3@example.com','5858585858','603201','testthecity','testing','testing','testing'),(6,'John','Doe','john@example.com','1234567890','123456','New York','Manhattan','123 Sender Street','Apt 4B'),(7,'Brendan','Miller','bmd@gmail.com','8998899811','603203','Chennai','xyz','Home','Roadway'),(8,'Samuel','Shetty','samuelshetty@gmail.com','3425167890','201310','Greater Noida','Sakipur Village','Purvanchal Heights,T-9, A3/107, Sector Zeta 1','Greater Noida'),(9,'in','despo','fred@example.com','4343434343','454545','ytyu','ino','poinnt','inone'),(10,'in','despo','fred@example.com','4343434343','454545','ytyu','ino','poinnt','inone'),(11,'in','despo','fred@example.com','4343434343','454545','ytyu','ino','poinnt','inone'),(12,'indo','despo','fred@example.com','4343434343','454545','ytyu','ino','poinnt','inone');
 /*!40000 ALTER TABLE `shipfrom` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -226,7 +226,7 @@ CREATE TABLE `shipment` (
   CONSTRAINT `shipment_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`),
   CONSTRAINT `shipment_ibfk_2` FOREIGN KEY (`from_address_id`) REFERENCES `shipfrom` (`shipfrom_id`),
   CONSTRAINT `shipment_ibfk_3` FOREIGN KEY (`to_address_id`) REFERENCES `shipto` (`shipto_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -235,7 +235,7 @@ CREATE TABLE `shipment` (
 
 LOCK TABLES `shipment` WRITE;
 /*!40000 ALTER TABLE `shipment` DISABLE KEYS */;
-INSERT INTO `shipment` VALUES (7,1,2,2,'EXPRESS','PENDING',0,0,'2024-10-24 05:15:11','2024-10-24 05:15:11'),(8,1,3,3,NULL,'ACCEPTED',0,0,'2024-10-24 05:16:05','2024-10-26 01:06:50'),(9,1,4,4,NULL,'REJECTED',0,0,'2024-10-24 12:11:47','2024-10-26 00:34:35'),(10,4,5,5,NULL,'ACCEPTED',0,0,'2024-10-24 12:16:36','2024-10-24 17:10:10'),(11,4,6,6,NULL,'ACCEPTED',0,0,'2024-10-24 18:44:11','2024-10-24 21:09:55'),(12,5,7,7,NULL,'PENDING',0,0,'2024-10-26 01:47:26','2024-10-26 01:47:26'),(13,6,8,8,NULL,'ACCEPTED',0,0,'2024-10-27 13:18:25','2024-10-27 13:19:46');
+INSERT INTO `shipment` VALUES (7,1,2,2,'EXPRESS','PENDING',0,0,'2024-10-24 05:15:11','2024-10-24 05:15:11'),(8,1,3,3,NULL,'ACCEPTED',0,0,'2024-10-24 05:16:05','2024-10-26 01:06:50'),(9,1,4,4,NULL,'REJECTED',0,0,'2024-10-24 12:11:47','2024-10-26 00:34:35'),(10,4,5,5,NULL,'ACCEPTED',0,0,'2024-10-24 12:16:36','2024-10-24 17:10:10'),(11,4,6,6,NULL,'ACCEPTED',0,0,'2024-10-24 18:44:11','2024-10-24 21:09:55'),(12,5,7,7,NULL,'PENDING',0,0,'2024-10-26 01:47:26','2024-10-26 01:47:26'),(13,6,8,8,NULL,'ACCEPTED',0,0,'2024-10-27 13:18:25','2024-10-27 13:19:46'),(14,7,9,9,NULL,'REJECTED',0,0,'2024-11-09 15:38:31','2024-11-09 17:39:34'),(15,7,10,10,NULL,'REJECTED',0,0,'2024-11-09 16:38:37','2024-11-09 17:39:31'),(16,7,11,11,NULL,'REJECTED',0,0,'2024-11-09 16:42:31','2024-11-09 17:39:27'),(17,7,12,12,NULL,'ACCEPTED',0,0,'2024-11-09 16:56:15','2024-11-09 17:39:25');
 /*!40000 ALTER TABLE `shipment` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -258,7 +258,7 @@ CREATE TABLE `shipmentitem` (
   PRIMARY KEY (`shipment_item_id`),
   KEY `shipment_id` (`shipment_id`),
   CONSTRAINT `shipmentitem_ibfk_1` FOREIGN KEY (`shipment_id`) REFERENCES `shipment` (`shipment_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -267,7 +267,7 @@ CREATE TABLE `shipmentitem` (
 
 LOCK TABLES `shipmentitem` WRITE;
 /*!40000 ALTER TABLE `shipmentitem` DISABLE KEYS */;
-INSERT INTO `shipmentitem` VALUES (1,NULL,'Big and Comfy Towels',NULL,3.00,350.00,'Towels','standard'),(2,7,'Electronics',2,5.50,1000.00,'Laptop','EXPRESS'),(3,7,'Accessories',3,1.00,200.00,'Chargers','EXPRESS'),(4,8,'Electronics',2,5.50,1000.00,'Laptop','EXPRESS'),(5,9,'Electronics',2,5.50,1000.00,'Laptop','EXPRESS'),(6,10,'Doughnuts',1,56.00,5600.00,NULL,'STANDARD'),(7,11,'Electronics',3,8.00,1000.00,'Phones','EXPRESS'),(8,12,'PCs',1,50.00,500000.00,NULL,'STANDARD'),(9,13,'Toy Car',1,4.00,2000.00,NULL,'EXPRESS');
+INSERT INTO `shipmentitem` VALUES (1,NULL,'Big and Comfy Towels',NULL,3.00,350.00,'Towels','standard'),(2,7,'Electronics',2,5.50,1000.00,'Laptop','EXPRESS'),(3,7,'Accessories',3,1.00,200.00,'Chargers','EXPRESS'),(4,8,'Electronics',2,5.50,1000.00,'Laptop','EXPRESS'),(5,9,'Electronics',2,5.50,1000.00,'Laptop','EXPRESS'),(6,10,'Doughnuts',1,56.00,5600.00,NULL,'STANDARD'),(7,11,'Electronics',3,8.00,1000.00,'Phones','EXPRESS'),(8,12,'PCs',1,50.00,500000.00,NULL,'STANDARD'),(9,13,'Toy Car',1,4.00,2000.00,NULL,'EXPRESS'),(10,14,'akjsfhd',1,5.00,1000.00,NULL,'STANDARD'),(11,15,'akjsfhd',1,5.00,1000.00,NULL,'EXPRESS'),(12,16,'akjsfhd',1,5.00,1000.00,NULL,'STANDARD'),(13,17,'akjsfhd',1,5.00,1000.00,NULL,'STANDARD');
 /*!40000 ALTER TABLE `shipmentitem` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -291,7 +291,7 @@ CREATE TABLE `shipto` (
   `address_line_1` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   `address_line_2` varchar(50) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
   PRIMARY KEY (`shipto_id`)
-) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=13 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -300,7 +300,7 @@ CREATE TABLE `shipto` (
 
 LOCK TABLES `shipto` WRITE;
 /*!40000 ALTER TABLE `shipto` DISABLE KEYS */;
-INSERT INTO `shipto` VALUES (1,'ABC','Gio','Vani','giovani@example.com','8989898898','111111','New Delhi','hijk','abcd','efgh'),(2,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','67890','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(3,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','67890','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(4,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','67890','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(5,'thetester','testee','testee','testee@example.com','8585858585','603202','testeecity','testeelocality','testeeaddress','testeeaddr'),(6,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','678901','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(7,'Amazon','Resha','mahong','rhmg@gmail.com','1234567895','403203','Bengaluru','indira nagar','Indira Nagar','AWS, Site Z'),(8,'+-+','uwwu','wuuw','uwu@gmail.com','1234567891','111111','New Delhi','iasuf','sahdfjh','fhfjksh');
+INSERT INTO `shipto` VALUES (1,'ABC','Gio','Vani','giovani@example.com','8989898898','111111','New Delhi','hijk','abcd','efgh'),(2,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','67890','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(3,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','67890','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(4,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','67890','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(5,'thetester','testee','testee','testee@example.com','8585858585','603202','testeecity','testeelocality','testeeaddress','testeeaddr'),(6,'Receiver Corp','Jane','Smith','jane@example.com','9876543210','678901','Los Angeles','Downtown','456 Receiver Ave','Suite 100'),(7,'Amazon','Resha','mahong','rhmg@gmail.com','1234567895','403203','Bengaluru','indira nagar','Indira Nagar','AWS, Site Z'),(8,'+-+','uwwu','wuuw','uwu@gmail.com','1234567891','111111','New Delhi','iasuf','sahdfjh','fhfjksh'),(9,'Student','Vachan','Shetty','vachan316@gmail.com','9899770898','201310','Greater Noida','121212','asdhfgh','kghfsj'),(10,'Student','Vachan','Shetty','vachan316@gmail.com','9899770898','201310','Greater Noida','121212','asdhfgh','kghfsj'),(11,'Student','Vachan','Shetty','vachan316@gmail.com','9899770898','201310','Greater Noida','121212','asdhfgh','kghfsj'),(12,'Student','Vachan','Shetty','vachan316@gmail.com','9899770898','201310','Greater Noida','121212','asdhfgh','kghfsj');
 /*!40000 ALTER TABLE `shipto` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -326,7 +326,7 @@ CREATE TABLE `user` (
   PRIMARY KEY (`user_id`),
   UNIQUE KEY `email` (`email`),
   UNIQUE KEY `user_uuid_key` (`uuid`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -335,7 +335,7 @@ CREATE TABLE `user` (
 
 LOCK TABLES `user` WRITE;
 /*!40000 ALTER TABLE `user` DISABLE KEYS */;
-INSERT INTO `user` VALUES (1,'Vachan','Shetty','vachan316@gmail.com','9899770898','vachanshetty','2024-10-21 18:52:31','2024-10-21 18:52:31',0,0,'ca0dec61-9663-4479-862a-01cb07b028ea'),(2,'Test User','testing','test@example.com','1234567890','string','2024-10-22 05:21:34','2024-10-22 05:21:34',0,0,'1239741yorugysd'),(3,'Test User 2','testing 2','test2@example.com','2234567890','string2','2024-10-22 11:04:46','2024-10-22 11:04:46',0,0,'1239741ydgsfdgsdugysd235hhjhg'),(4,'Test ','User 3','testuser3@example.com','5858585858','testing','2024-10-24 17:02:05','2024-10-24 17:02:05',0,0,'9d867f25-4103-4e09-b75e-1c543ee80067'),(5,'Dharka','G','dhg@gmail.com','123456781','qwerty12','2024-10-26 07:17:14','2024-10-26 07:17:14',0,0,'6a561275-3d20-4630-83dc-8c576f0d3402'),(6,'Samuel','Shetty','samuelshetty@gmail.com','4536271890','samuel2017','2024-10-27 18:44:17','2024-10-27 18:44:17',0,0,'1c5a6c61-9b1c-4442-a897-9f1466e36640');
+INSERT INTO `user` VALUES (1,'Vachan','Shetty','vachan316@gmail.com','9899770898','vachanshetty','2024-10-21 18:52:31','2024-10-21 18:52:31',0,0,'ca0dec61-9663-4479-862a-01cb07b028ea'),(2,'Test User','testing','test@example.com','1234567890','string','2024-10-22 05:21:34','2024-10-22 05:21:34',0,0,'1239741yorugysd'),(3,'Test User 2','testing 2','test2@example.com','2234567890','string2','2024-10-22 11:04:46','2024-10-22 11:04:46',0,0,'1239741ydgsfdgsdugysd235hhjhg'),(4,'Test ','User 3','testuser3@example.com','5858585858','testing','2024-10-24 17:02:05','2024-10-24 17:02:05',0,0,'9d867f25-4103-4e09-b75e-1c543ee80067'),(5,'Dharka','G','dhg@gmail.com','123456781','qwerty12','2024-10-26 07:17:14','2024-10-26 07:17:14',0,0,'6a561275-3d20-4630-83dc-8c576f0d3402'),(6,'Samuel','Shetty','samuelshetty@gmail.com','4536271890','samuel2017','2024-10-27 18:44:17','2024-10-27 18:44:17',0,0,'1c5a6c61-9b1c-4442-a897-9f1466e36640'),(7,'Vachan','Shetty','va3254@srmist.edu.in','9899770898','201','2024-11-09 21:04:58','2024-11-09 21:04:58',0,0,'bde65f1d-146e-4dee-b964-9bddbca691f4'),(9,'Gooogoo','gagag','goga@example.com','01234449911','123','2024-11-09 22:35:41','2024-11-09 22:35:41',0,0,'e8bfa347-eff3-4c29-96c7-180171835646');
 /*!40000 ALTER TABLE `user` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -348,4 +348,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2024-10-28 15:50:06
+-- Dump completed on 2024-11-09 23:38:34

@@ -30,6 +30,7 @@
     "@trycourier/courier": "^6.2.1",
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
+    "compression": "^1.7.5",
     "dayjs": "^1.11.13",
     "mysql-client": "^0.3.0",
     "mysql2": "^3.11.0",

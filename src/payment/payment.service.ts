@@ -8,6 +8,13 @@ export class PaymentService {
   async getAllPayments(): Promise<payment[]> {
     return this.prisma.payment.findMany();
   }
+  async getLatestPayment(): Promise<payment> {
+    return this.prisma.payment.findFirst({
+      orderBy: {
+        created_at: 'desc', // Assuming 'created_at' is the timestamp for when the payment was created
+      },
+    });
+  }
   async getPayment(payment_id: number): Promise<payment | null> {
     return this.prisma.payment.findUnique({
       where: { payment_id: Number(payment_id) },
@@ -43,12 +50,32 @@ export class PaymentService {
     });
   }
 
+  //   async getPaymentsWithinDateRange(
+  //     startDate: Date,
+  //     endDate: Date,
+  //   ): Promise<payment[]> {
+  //     try {
+  //       return await this.prisma.payment.findMany({
+  //         where: {
+  //           created_at: {
+  //             gte: startDate,
+  //             lt: endDate,
+  //           },
+  //         },
+  //       });
+  //     } catch (error) {
+  //       console.error('Error fetching payments:', error);
+  //       throw new Error('Could not fetch payments');
+  //     }
+  //   }
+  // }
   async getPaymentsWithinDateRange(
     startDate: Date,
     endDate: Date,
-  ): Promise<payment[]> {
+  ): Promise<{ data: payment[]; total: number; trend: number }> {
     try {
-      return this.prisma.payment.findMany({
+      // Step 1: Fetch payments in the specified date range
+      const payments = await this.prisma.payment.findMany({
         where: {
           created_at: {
             gte: startDate,
@@ -56,6 +83,38 @@ export class PaymentService {
           },
         },
       });
+
+      // Step 2: Calculate the total amount within the date range
+      const total = payments.reduce(
+        (sum, payment) => sum + Number(payment.amount),
+        0,
+      );
+
+      // Step 3: Calculate trend by comparing with the previous period
+      const previousStartDate = new Date(
+        startDate.getTime() - (endDate.getTime() - startDate.getTime()),
+      );
+      const previousEndDate = startDate;
+
+      const previousPayments = await this.prisma.payment.findMany({
+        where: {
+          created_at: {
+            gte: previousStartDate,
+            lt: previousEndDate,
+          },
+        },
+      });
+
+      const previousTotal = previousPayments.reduce(
+        (sum, payment) => sum + Number(payment.amount),
+        0,
+      );
+
+      // Calculate the trend as a percentage change from the previous period
+      const trend =
+        previousTotal > 0 ? ((total - previousTotal) / previousTotal) * 100 : 0;
+
+      return { data: payments, total, trend };
     } catch (error) {
       console.error('Error fetching payments:', error);
       throw new Error('Could not fetch payments');

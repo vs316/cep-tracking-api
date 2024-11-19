@@ -31,6 +31,10 @@ export class PaymentController {
       result: result,
     });
   }
+  @Get('latest')
+  async getLatestPayment(): Promise<payment> {
+    return this.paymentService.getLatestPayment();
+  }
   @Post()
   async postPayment(@Body() postData: payment): Promise<payment> {
     return this.paymentService.createPayment(postData);
@@ -57,6 +61,28 @@ export class PaymentController {
   ): Promise<payment> {
     return this.paymentService.updatePayment(payment_id, data);
   }
+  // @Get('dailyrevenue')
+  // async getPaymentsWithinDateRange(
+  //   @Query('start') start: string,
+  //   @Query('end') end: string,
+  //   @Res() response: Response,
+  // ): Promise<any> {
+  //   const startDate = dayjs(start).toDate();
+  //   const endDate = dayjs(end).toDate();
+
+  //   // Fetch payments within the date range
+  //   const payments = await this.paymentService.getPaymentsWithinDateRange(
+  //     startDate,
+  //     endDate,
+  //   );
+
+  //   return response.status(200).json({
+  //     status: 'Ok!',
+  //     message: 'Successfully fetched data!',
+  //     data: payments,
+  //   });
+  // }
+
   @Get('dailyrevenue')
   async getPaymentsWithinDateRange(
     @Query('start') start: string,
@@ -66,8 +92,8 @@ export class PaymentController {
     const startDate = dayjs(start).toDate();
     const endDate = dayjs(end).toDate();
 
-    // Fetch payments within the date range
-    const payments = await this.paymentService.getPaymentsWithinDateRange(
+    // Fetch payments, total, and trend within the date range
+    const result = await this.paymentService.getPaymentsWithinDateRange(
       startDate,
       endDate,
     );
@@ -75,9 +101,12 @@ export class PaymentController {
     return response.status(200).json({
       status: 'Ok!',
       message: 'Successfully fetched data!',
-      data: payments,
+      data: result.data,
+      total: result.total,
+      trend: result.trend,
     });
   }
+
   @Get('today')
   async getTodayOrders(@Res() response: Response): Promise<any> {
     try {

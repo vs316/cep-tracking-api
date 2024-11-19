@@ -4,4 +4,11 @@ Dockerfile
 .dockerignore
 README.md
 *.log
+dist
+build
+.git
+.gitignore
+
 .env
+
+.vscode
