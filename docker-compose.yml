@@ -42,14 +42,105 @@
 # volumes:
 #   db_data:
 #     driver: local
+# networks:
+#   internal:
+#     driver: bridge
 
-networks:
-  internal:
-    driver: bridge
+# services:
+#   nestjs-app:
+#     network_mode: host
+#     container_name: nestjs-app
+#     build:
+#       context: .
+#       dockerfile: Dockerfile
+#       target: production
+#     restart: unless-stopped
+#     environment:
+#       - NODE_ENV=production
+#       - DATABASE_URL=mysql://root:admin@mysql-db:3306/cep_tracking # Correct database URL
+#       - FRONTEND_URL=http://localhost:3001
+#       - ALLOWED_ORIGINS=http://localhost:3001,http://localhost:4173,http://localhost:5173
+#     # ports:
+#     #   - '3000:3000'
+#     stdin_open: true
+#     tty: true
+#     volumes:
+#       - .:/app
+#     healthcheck:
+#       test: ['CMD', 'curl', '-f', 'http://localhost:3000/health']
+#       interval: 10s
+#       timeout: 5s
+#       retries: 3
+#       start_period: 10s
+#     depends_on:
+#       - mysql-db
+#         # condition: service_healthy
+#     networks:
+#       - internal
+#     deploy:
+#       restart_policy:
+#         condition: on-failure
+#         max_attempts: 3
+#     logging:
+#       driver: json-file
+#       options:
+#         max-size: '10m'
+#         max-file: '3'
+
+#   mysql-db:
+#     container_name: mysql-db
+#     image: mysql:latest
+#     environment:
+#       MYSQL_ROOT_PASSWORD: admin
+#       MYSQL_DATABASE: cep_tracking
+#       MYSQL_ROOT_HOST: '%'
+#     ports:
+#       - '3307:3306'
+#     volumes:
+#       - db_data:/var/lib/mysql
+#     networks:
+#       - internal
+#     # healthcheck:
+#     #   test:
+#     #     [
+#     #       'CMD',
+#     #       'mysqladmin',
+#     #       'ping',
+#     #       '-h',
+#     #       'localhost',
+#     #       '-u',
+#     #       'root',
+#     #       '-p$$MYSQL_ROOT_PASSWORD',
+#     #     ]
+#     #   interval: 10s
+#     #   timeout: 5s
+#     #   retries: 3
+#     #   start_period: 30s
+#     # command: --mysql-native-password=ON
+
+#   phpmyadmin:
+#     container_name: phpmyadmin
+#     image: phpmyadmin/phpmyadmin
+#     depends_on:
+#       - mysql-db
+#     restart: unless-stopped
+#     environment:
+#       # Hostname of the MySQL database container
+#       PMA_HOST: mysql-db
+#       # Root password for MySQL
+#       MYSQL_ROOT_PASSWORD: admin
+#     ports:
+#       - '8087:80'
+#     # Use the default network
+#     networks:
+#       - internal
+
+# volumes:
+#   db_data:
+#     driver: local
 
 services:
   nestjs-app:
-    network_mode: host
     container_name: nestjs-app
     build:
       context: .
@@ -58,11 +149,11 @@ services:
     restart: unless-stopped
     environment:
       - NODE_ENV=production
-      - DATABASE_URL=mysql://root:admin@mysql-db:3306/cep_tracking # Correct database URL
+      - DATABASE_URL=mysql://root:admin@mysql-db:3306/cep_tracking # Use container name as host
       - FRONTEND_URL=http://localhost:3001
       - ALLOWED_ORIGINS=http://localhost:3001,http://localhost:4173,http://localhost:5173
-    # ports:
-    #   - '3000:3000'
+    ports:
+      - '3100:3000'
     stdin_open: true
     tty: true
     volumes:
@@ -74,8 +165,8 @@ services:
       retries: 3
       start_period: 10s
     depends_on:
-      - mysql-db
-        # condition: service_healthy
+      mysql-db:
+        condition: service_healthy
     networks:
       - internal
     deploy:
@@ -101,23 +192,12 @@ services:
       - db_data:/var/lib/mysql
     networks:
       - internal
-    # healthcheck:
-    #   test:
-    #     [
-    #       'CMD',
-    #       'mysqladmin',
-    #       'ping',
-    #       '-h',
-    #       'localhost',
-    #       '-u',
-    #       'root',
-    #       '-p$$MYSQL_ROOT_PASSWORD',
-    #     ]
-    #   interval: 10s
-    #   timeout: 5s
-    #   retries: 3
-    #   start_period: 30s
-    # command: --mysql-native-password=ON
+    healthcheck:
+      test: ['CMD', 'mysqladmin', 'ping', '-h', 'localhost']
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 20s
 
   phpmyadmin:
     container_name: phpmyadmin
@@ -126,16 +206,16 @@ services:
       - mysql-db
     restart: unless-stopped
     environment:
-      # Hostname of the MySQL database container
       PMA_HOST: mysql-db
-      # Root password for MySQL
       MYSQL_ROOT_PASSWORD: admin
     ports:
       - '8087:80'
-    # Use the default network
     networks:
       - internal
 
 volumes:
   db_data:
     driver: local
+networks:
+  internal:
+    driver: bridge
