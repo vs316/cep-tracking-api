@@ -141,11 +141,12 @@
 
 services:
   nestjs-app:
+    image: vs316/cep-tracking-api-nestjs-app:latest # Use the image from Docker Hub
     container_name: nestjs-app
-    build:
-      context: .
-      dockerfile: Dockerfile
-      target: production
+    # build:
+    #   context: .
+    #   dockerfile: Dockerfile
+    #   target: production
     restart: unless-stopped
     environment:
       - NODE_ENV=production

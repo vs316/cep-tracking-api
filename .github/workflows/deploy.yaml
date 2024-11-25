@@ -3,42 +3,48 @@ name: CI Pipeline
 on:
   push:
     paths:
-      - 'cep-tracking-api/**' # Only trigger the pipeline when changes occur in this directory
+      - 'cep-tracking-api/**' # Trigger only on changes in this directory
     branches:
       - main
   workflow_dispatch: # Allows manual trigger of the workflow
 
 jobs:
-  build:
-    runs-on: self-hosted # Use the self-hosted runner for this job
+  deploy:
+    runs-on: [self-hosted, VACHAN]
 
     steps:
-      # Checkout the code
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v2
 
-      # Set up Docker
+      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Linting (replace with your preferred linter or setup)
+      # Step 3: Lint the code
       - name: Run Linter
         run: |
           npm install -g eslint  # Install eslint
-          eslint cep-tracking-api/  # Run linting on the 'code' directory
+          eslint cep-tracking-api/  # Run linting
 
-      # Install dependencies and run tests
+      # Step 4: Install dependencies and run tests
       - name: Install dependencies and run tests
         run: |
-          npm install  # Install dependencies
-          npm run test  # Run the tests
+          npm install
+          npm run test
 
-      # Log in to Docker Hub
+      # Step 5: Log in to Docker Hub
       - name: Log in to DockerHub
         run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Build and push Docker image
+      # Step 6: Build and push Docker image with new name
       - name: Build and push Docker image
         run: |
-          docker build -t vs316/cep-tracking-api-app:latest .
-          docker push vs316/cep-tracking-api-app:latest
+          docker build -t vs316/cep-tracking-api-nestjs-app:latest ./cep-tracking-api
+          docker push vs316/cep-tracking-api-nestjs-app:latest
+
+      # Step 7: Pull new image and restart Docker Compose stack
+      - name: Restart Docker Compose Stack
+        run: |
+          docker compose -f ./cep-tracking-api/docker-compose.yml pull nestjs-app
+          docker compose -f ./cep-tracking-api/docker-compose.yml up -d --no-deps nestjs-app

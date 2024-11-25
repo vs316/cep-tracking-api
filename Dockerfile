@@ -6,6 +6,7 @@ COPY package*.json ./
 COPY prisma ./prisma/
 RUN npm config set registry https://registry.npmmirror.com/
 RUN npm install
+RUN npm install -g prisma@5.22.0
 RUN npx prisma generate
 # Copy source code
 COPY . .
