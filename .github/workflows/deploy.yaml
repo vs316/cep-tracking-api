@@ -11,7 +11,10 @@ on:
 jobs:
   deploy:
     runs-on: self-hosted
-
+    env:
+      RUNNER_TEMP: ${{ runner.temp }}/${{ github.run_id }}
+      GITHUB_WORKSPACE: ${{ runner.workspace }}/${{ github.run_id }}
+      # GIT_OPTIONAL_LOCKS: 0 # Prevent file locking
     steps:
       # Step 1: Checkout the repository in a fresh folder
       - name: Checkout code
