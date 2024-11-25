@@ -29,7 +29,7 @@ COPY --from=development /app/package*.json ./
 COPY --from=development /app/prisma ./prisma
 COPY --from=development /app/wait-for-db.sh ./wait-for-db.sh
 RUN npm config set registry https://registry.npmmirror.com/
-# Make wait-for-db.sh executable
 RUN chmod +x wait-for-db.sh
+
 EXPOSE 3000
 CMD ["./wait-for-db.sh", "node", "dist/main"]
