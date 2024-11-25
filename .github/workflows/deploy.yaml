@@ -19,9 +19,6 @@ jobs:
         with:
           persist-credentials: false
           ref: master
-        retry:
-          max-attempts: 3
-          delay-seconds: 10
 
       # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
