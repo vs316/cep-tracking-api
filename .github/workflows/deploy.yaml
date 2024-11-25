@@ -20,6 +20,10 @@ jobs:
           cd "CI Pipeline"       # Navigate to the new folder
           echo "Fresh folder setup complete."
 
+      - name: Cleanup temporary directories
+        run: |
+          echo "Cleaning up temporary directories"
+          rmdir /S /Q "C:\Users\vacha\actions-runner\_work\_temp" || echo "No cleanup needed"
       # Step 2: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4 # Use latest version
