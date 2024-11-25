@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     paths:
-      - 'cep-tracking-api/**' # Trigger only on changes in this directory
+      - '**' # Trigger only on changes in this directory
     branches:
       - main
   workflow_dispatch: # Allows manual trigger of the workflow
@@ -38,12 +38,12 @@ jobs:
       - name: Run Linter
         run: |
           npm install -g eslint  # Install ESLint globally
-          eslint ./cep-tracking-api  # Lint JavaScript and TypeScript files
+          eslint ./src  # Lint JavaScript and TypeScript files
 
       # Step 5: Install dependencies and run tests
       - name: Install dependencies and run tests
         run: |
-          cd cep-tracking-api
+          cd ./src
           npm install
           npm run test
 
@@ -54,7 +54,7 @@ jobs:
       # Step 7: Build and push Docker image
       - name: Build and push Docker image
         run: |
-          docker build -t vs316/cep-tracking-api-nestjs-app:latest ./cep-tracking-api
+          docker build -t vs316/cep-tracking-api-nestjs-app:latest ./src
           docker push vs316/cep-tracking-api-nestjs-app:latest
 
       # Step 8: Restart Docker Compose Stack
