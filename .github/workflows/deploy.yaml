@@ -13,21 +13,15 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Clean up workspace
-        run: |
-          if [ -d "$GITHUB_WORKSPACE" ]; then
-            rm -rf "$GITHUB_WORKSPACE"
-          fi
-          mkdir -p "$GITHUB_WORKSPACE"
       # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v3
-        # with:
-        #   persist-credentials: false
-        #   ref: master
-        # retry:
-        #   max-attempts: 3
-        #   delay-seconds: 10
+        with:
+          persist-credentials: false
+          ref: master
+        retry:
+          max-attempts: 3
+          delay-seconds: 10
 
       # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
