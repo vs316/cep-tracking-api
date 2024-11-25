@@ -10,7 +10,7 @@ on:
 
 jobs:
   deploy:
-    runs-on: [self-hosted]
+    runs-on: self-hosted
 
     steps:
       # Step 1: Checkout the repository
