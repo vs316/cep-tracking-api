@@ -13,6 +13,11 @@ jobs:
     runs-on: self-hosted
 
     steps:
+      - name: Cleanup workspace
+        run: |
+          rm -rf ${{ github.workspace }}/*
+          rm -rf ${{ github.workspace }}/.* || true
+
       # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4 # Use latest version
