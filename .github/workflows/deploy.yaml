@@ -13,17 +13,13 @@ jobs:
     runs-on: self-hosted
 
     steps:
-      - name: Cleanup workspace
-        run: |
-          rm -rf ${{ github.workspace }}/*
-          rm -rf ${{ github.workspace }}/.* || true
-
       # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4 # Use latest version
         with:
           clean: true # Ensure thorough cleanup
           fetch-depth: 1 # Shallow clone to reduce overhead
+          persist-credentials: false
       # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
