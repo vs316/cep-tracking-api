@@ -21,11 +21,11 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      # Step 2: Debug Directory
-      - name: Debug Directory
-        run: |
-          ls -al  # List files at the root
-          ls -al cep-tracking-api/  # Confirm source folder
+      # # Step 2: Debug Directory
+      # - name: Debug Directory
+      #   run: |
+      #     ls -al  # List files at the root
+      #     ls -al cep-tracking-api/  # Confirm source folder
 
       # Step 3: Set up Docker Buildx
       - name: Set up Docker Buildx
@@ -35,7 +35,7 @@ jobs:
       - name: Run Linter
         run: |
           npm install -g eslint  # Install ESLint globally
-          eslint "cep-tracking-api/**/*.{js,ts}"  # Lint JavaScript and TypeScript files
+          eslint ./cep-tracking-api  # Lint JavaScript and TypeScript files
 
       # Step 5: Install dependencies and run tests
       - name: Install dependencies and run tests
