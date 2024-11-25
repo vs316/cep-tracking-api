@@ -10,62 +10,45 @@ on:
 
 jobs:
   deploy:
-    runs-on: self-hosted
+    runs-on: ubuntu-latest
 
     steps:
-      # Step 1: Create a fresh directory and checkout code
-      - name: Setup fresh folder for checkout
-        run: |
-          mkdir -p "CI Pipeline" # Create folder if not exists
-          cd "CI Pipeline"       # Navigate to the new folder
-          echo "Fresh folder setup complete."
-
-      - name: Cleanup temporary directories
-        run: |
-          echo "Cleaning up temporary directories"
-          rmdir /S /Q "C:\Users\vacha\actions-runner\_work\_temp" || echo "No cleanup needed"
-      # Step 2: Checkout the repository
+      # Step 1: Checkout the repository
       - name: Checkout code
         uses: actions/checkout@v4 # Use latest version
         with:
-          path: 'CI Pipeline' # Checkout repository into the new folder
           clean: true # Ensure thorough cleanup
           fetch-depth: 1 # Shallow clone to reduce overhead
           persist-credentials: false
 
-      # Step 3: Set up Docker Buildx
+      # Step 2: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Step 4: Lint the code
+      # Step 3: Lint the code
       - name: Run Linter
         run: |
-          cd "CI Pipeline"
           npm install -g eslint  # Install eslint
           eslint cep-tracking-api/  # Run linting
 
-      # Step 5: Install dependencies and run tests
+      # Step 4: Install dependencies and run tests
       - name: Install dependencies and run tests
         run: |
-          cd "CI Pipeline"
           npm install
           npm run test
 
-      # Step 6: Log in to Docker Hub
+      # Step 5: Log in to Docker Hub
       - name: Log in to DockerHub
-        run: |
-          echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
 
-      # Step 7: Build and push Docker image with new name
+      # Step 6: Build and push Docker image with new name
       - name: Build and push Docker image
         run: |
-          cd "CI Pipeline/cep-tracking-api"
-          docker build -t vs316/cep-tracking-api-nestjs-app:latest .
+          docker build -t vs316/cep-tracking-api-nestjs-app:latest ./cep-tracking-api
           docker push vs316/cep-tracking-api-nestjs-app:latest
 
-      # Step 8: Pull new image and restart Docker Compose stack
+      # Step 7: Pull new image and restart Docker Compose stack
       - name: Restart Docker Compose Stack
         run: |
-          cd "CI Pipeline/cep-tracking-api"
-          docker compose pull nestjs-app
-          docker compose up -d --no-deps nestjs-app
+          docker compose -f ./cep-tracking-api/docker-compose.yml pull nestjs-app
+          docker compose -f ./cep-tracking-api/docker-compose.yml up -d --no-deps nestjs-app
