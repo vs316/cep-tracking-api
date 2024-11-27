@@ -1,4 +1,4 @@
-/* eslint-disable @typescript-eslint/no-unused-vars */
+ 
 import { Controller, Get, Query } from '@nestjs/common';
 
 @Controller('orders')
