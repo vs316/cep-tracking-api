@@ -34,13 +34,11 @@ jobs:
           restore-keys: |
             ${{ runner.os }}-node-
 
-      # Step 3: Install Dependencies
-      - name: Install Dependencies
-        run: npm ci
-
-      # Step 4: Run Linter
-      - name: Run ESLint
-        run: npm run lint
+      - name: Install Dependencies and Run Linter
+        run: |
+          npm install glob@latest lru-cache@latest
+          npm install eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
+          npm ci
 
       # Step 5: Run Tests
       - name: Run Tests
