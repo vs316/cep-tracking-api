@@ -26,10 +26,9 @@ jobs:
         uses: docker/setup-buildx-action@v2
 
       # Step 4: Run Linter
-      - name: Run Linter
+      - name: Install ESLint and Plugins
         run: |
-          npm install -g eslint  # Install ESLint globally
-          eslint ./src  # Lint JavaScript and TypeScript files
+          npm install -g eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
 
       # Step 5: Install dependencies and run tests
       - name: Install dependencies and run tests
