@@ -18,6 +18,9 @@
     "strictBindCallApply": false,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": false,
-    "esModuleInterop": true
+    "esModuleInterop": true,
+    "paths": {
+      "src/*": ["src/*"] // Adds support for absolute imports
+    }
   }
 }
