@@ -3,7 +3,7 @@ name: CI Pipeline
 on:
   push:
     paths:
-      - '**' # Trigger only on changes in this directory
+      - '**'
     branches:
       - main
   workflow_dispatch: # Allows manual trigger of the workflow
@@ -21,34 +21,46 @@ jobs:
           fetch-depth: 1
           persist-credentials: false
 
-      # Step 3: Set up Docker Buildx
+      # Step 2: Cache Node.js Dependencies
+      - name: Cache Node.js Modules
+        uses: actions/cache@v3
+        with:
+          path: ~/.npm
+          key: ${{ runner.os }}-node-${{ hashFiles('**/package-lock.json') }}
+          restore-keys: |
+            ${{ runner.os }}-node-
+
+      # Step 3: Install Dependencies
+      - name: Install Dependencies
+        run: npm ci
+
+      # Step 4: Run Linter
+      - name: Run ESLint
+        run: npm run lint
+
+      # Step 5: Run Tests
+      - name: Run Tests
+        run: npm run test
+
+      # Step 6: Set up Docker Buildx
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v2
 
-      # Step 4: Run Linter
-      - name: Install ESLint and Plugins
-        run: |
-          npm install -g eslint @typescript-eslint/eslint-plugin @typescript-eslint/parser
-
-      # Step 5: Install dependencies and run tests
-      - name: Install dependencies and run tests
-        run: |
-          cd .
-          npm install
-          npm run test
-
-      # Step 6: Log in to Docker Hub
+      # Step 7: Log in to Docker Hub
       - name: Log in to DockerHub
-        run: echo "${{ secrets.DOCKER_PASSWORD }}" | docker login -u "${{ secrets.DOCKER_USERNAME }}" --password-stdin
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
 
-      # Step 7: Build and push Docker image
-      - name: Build and push Docker image
+      # Step 8: Build and push Docker image
+      - name: Build and Push Docker Image
         run: |
-          docker build -t vs316/cep-tracking-api-nestjs-app:latest .
-          docker push vs316/cep-tracking-api-nestjs-app:latest
+          docker buildx build --platform linux/amd64 -t vs316/cep-tracking-api-nestjs-app:latest --push .
 
-      # Step 8: Restart Docker Compose Stack
+      # Step 9: Restart Docker Compose Stack
       - name: Restart Docker Compose Stack
         run: |
+          set -e
           docker compose -f ./docker-compose.yml pull nestjs-app
           docker compose -f ./docker-compose.yml up -d --no-deps nestjs-app
