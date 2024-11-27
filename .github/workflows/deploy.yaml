@@ -50,5 +50,5 @@ jobs:
       # Step 8: Restart Docker Compose Stack
       - name: Restart Docker Compose Stack
         run: |
-          docker compose -f ./cep-tracking-api/docker-compose.yml pull nestjs-app
-          docker compose -f ./cep-tracking-api/docker-compose.yml up -d --no-deps nestjs-app
+          docker compose -f ./docker-compose.yml pull nestjs-app
+          docker compose -f ./docker-compose.yml up -d --no-deps nestjs-app
